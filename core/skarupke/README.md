@@ -1,0 +1,1 @@
+CMake wrapper for a skarupke/flat_hash_map library (https://github.com/skarupke/flat_hash_map).

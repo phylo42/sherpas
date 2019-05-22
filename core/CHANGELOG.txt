@@ -1,0 +1,13 @@
+v0.1.2
+- core::encode_kmers and core::to_kmers now support gaps and N's
+- core::phylo_kmer_db now has kmer_size()
+- Updated examples
+- Added tests
+- Added changelog
+
+v0.1.1
+- Added core::to_kmers (k-mer iteration and rolling codes calculation)
+- Updated examples
+
+v0.1.0
+- First released version

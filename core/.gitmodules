@@ -1,0 +1,30 @@
+[submodule "skarupke"]
+	path = skarupke
+	url = git@gite.lirmm.fr:rappas-team/skarupke.git
+[submodule "catch2"]
+	path = catch2
+	url = git@github.com:catchorg/Catch2.git
+[submodule "robin-hood-hashing"]
+	path = robin-hood-hashing
+	url = git@github.com:martinus/robin-hood-hashing.git
+[submodule "parallel-hashmap"]
+	path = parallel-hashmap
+	url = git@github.com:greg7mdp/parallel-hashmap.git
+[submodule "robin-map"]
+	path = robin-map
+	url = git@github.com:Tessil/robin-map.git
+[submodule "hopscotch-map"]
+	path = hopscotch-map
+	url = git@github.com:Tessil/hopscotch-map.git
+[submodule "martinus"]
+	path = martinus
+	url = git@gite.lirmm.fr:rappas-team/martinus.git
+[submodule "abseil-cpp"]
+	path = abseil-cpp
+	url = git@github.com:abseil/abseil-cpp.git
+[submodule "folly"]
+	path = folly
+	url = git@github.com:facebook/folly.git
+[submodule "sparsehash-c11"]
+	path = sparsehash-c11
+	url = git@github.com:sparsehash/sparsehash-c11.git

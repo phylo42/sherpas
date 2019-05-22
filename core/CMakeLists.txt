@@ -1,0 +1,30 @@
+cmake_minimum_required(VERSION 3.10)
+
+message("-- Hash map option: " ${HASH_MAP})
+
+if(${HASH_MAP} STREQUAL USE_SKA_FLAT_HASH_MAP)
+    add_subdirectory(skarupke)
+elseif(${HASH_MAP} STREQUAL USE_SKA_BYTELL_HASH_MAP)
+    add_subdirectory(skarupke)
+elseif(${HASH_MAP} STREQUAL USE_ABSL_FLAT_HASH_MAP)
+    set(BUILD_TESTING OFF)
+    add_subdirectory(abseil-cpp)
+elseif(${HASH_MAP} STREQUAL USE_FOLLY_F14_FAST_MAP)
+    add_subdirectory(folly)
+elseif(${HASH_MAP} STREQUAL USE_PHMAP_FLAT_HASH_MAP)
+    add_subdirectory(parallel-hashmap)
+elseif(${HASH_MAP} STREQUAL USE_TSL_ROBIN_MAP)
+    add_subdirectory(robin-map)
+elseif(${HASH_MAP} STREQUAL USE_TSL_HOPSCOTCH_MAP)
+    add_subdirectory(hopscotch-map)
+endif()
+#add_subdirectory(martinus)
+
+# Catch2 includes
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/catch2/contrib")
+
+add_subdirectory(catch2)
+add_subdirectory(core)
+add_subdirectory(examples)
+add_subdirectory(tests)
+add_subdirectory(utils)

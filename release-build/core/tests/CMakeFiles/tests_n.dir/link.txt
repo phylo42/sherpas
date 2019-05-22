@@ -1,0 +1,1 @@
+/usr/bin/c++  -O3 -DNDEBUG   CMakeFiles/tests_n.dir/src/main.cpp.o  -o tests_n ../core/libcore_n.a /usr/lib/x86_64-linux-gnu/libboost_filesystem.so ../utils/libutils.a /usr/lib/x86_64-linux-gnu/libboost_iostreams.so /usr/lib/x86_64-linux-gnu/libboost_regex.so /usr/lib/x86_64-linux-gnu/libboost_serialization.so /usr/lib/x86_64-linux-gnu/libboost_system.so 
