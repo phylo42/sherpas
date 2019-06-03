@@ -14,37 +14,6 @@
 
 using namespace std;
 
-core::phylo_kmer_db GroupDb(const core::phylo_kmer_db& db, std::vector<int> groups, int g)
-{
-	core::phylo_kmer_db db2 {groups.size()};
-	double thr=core::score_threshold(db.kmer_size());
-	std::vector<double> bg(g, thr);
-	for(int key=0; key<db.size(); key++)
-		if (auto entries = db.search(key); entries)
-		{
-			for (const auto& [branch, score] : *entries)
-			{
-				if(score>bg[groups[branch]])
-				{
-					bg[groups[branch]]=score;
-				}
-			}
-			for(int i=0; i<g; i++)
-			{
-			if(bg[i] > thr)
-				{
-					db2.put(key, i, bg[i]);
-					bg[i]=thr;
-				}
-			}
-		}
-		else
-		{
-		std::cout << "Key " << key << " not found.\n";
-		}
-	return db2;
-}
-
 std::vector<core::phylo_kmer_db::key_type> encode_string_views(std::string_view long_read, const size_t kmer_size)
 {
 	std::vector<core::phylo_kmer_db::key_type> res(0);
@@ -107,18 +76,18 @@ void readQuery(std::vector<core::phylo_kmer_db::key_type> codes, const core::phy
 	}
 }
 
-void printScore(std::vector<Arc*> result)
+void printScore(std::vector<Arc*> result, std::vector<std::string> ref)
 {
 	int s=result.size();
 	for(int i=0; i<s; i++)
 	{
-		//cout << i+1 << ". arc ";
-		(*result[i]).printPlace();
+		//cout << i+1 << ".";
+		(*result[i]).printPlace(ref);
 		cout << ": " << (*result[i]).getScore() << endl;
 	}
 }
 
-void printChange(std::vector<std::vector<Arc*>> result, int a)
+void printChange(std::vector<std::vector<Arc*>> result, int a, std::vector<std::string> ref)
 {
 	int s=result.size();
 	int c=0;
@@ -128,7 +97,7 @@ void printChange(std::vector<std::vector<Arc*>> result, int a)
 		if((*result[i][0]).getPlace() != aref || a==0)
 		{
 			cout << "W" << i << ": " << endl;
-			printScore(result[i]);
+			printScore(result[i], ref);
 			aref=(*result[i][0]).getPlace();
 			cout << endl;
 			c++;

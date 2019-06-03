@@ -17,6 +17,8 @@
 
 int max(std::vector<int> list);
 
+void getId(std::string align, std::string res);
+
 void recordGroups(std::string doc,std::vector<int>* leafMap, std::vector<std::string>* ref);
 
 std::vector<int> makeGroups(core::phylo_tree& tree, std::vector<int> leafMap);

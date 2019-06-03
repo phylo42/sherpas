@@ -199,7 +199,7 @@ void windInit(std::vector<std::vector<Arc*>> *wind)
 	}
 }*/
 
-void SciPlot(int n, std::string_view query, std::vector<Arc> branches, std::vector<std::vector<Arc*>> res)
+void SciPlot(int n, std::string_view query, std::vector<std::string> ref, std::vector<Arc> branches, std::vector<std::vector<Arc*>> res)
 {
 	int w=res.size();
 	if(w>0)
@@ -211,7 +211,7 @@ void SciPlot(int n, std::string_view query, std::vector<Arc> branches, std::vect
 		ofstream plot(ad);
 		if(plot)
 		{
-			plot << "// query: " << query << endl;
+			//plot << "// query: " << query << endl;
 			plot << "clear;" << endl;
 			plot << "W=0:" << w-1 << endl;
 			plot << "M=%nan*ones(" << b-1 <<"," << w << ")" << endl;
@@ -227,8 +227,19 @@ void SciPlot(int n, std::string_view query, std::vector<Arc> branches, std::vect
 			}
 			plot << "for i=1:" << b-1 << endl;
 			plot << "if check(i)>0" << endl;
-			plot << "plot2d(W,M(i,1:" << w << "),style=modulo(i,10)+1)" << endl;
+			plot << "plot2d(W,M(i,1:" << w << "),style=modulo(i," << ref.size() << ")+1)" << endl;
 			plot << "end" << endl << "end" << endl;
+			plot << "xtitle(\"" << query << "\",\"Window\",\"Score\")" << endl;
+			/*plot << "legend(";
+			for(int i=1; i<ref.size(); i++)
+			{
+				plot << "\"" << ref[i];
+				if(i<ref.size()-1)
+				{
+					plot << "\", ";
+				}
+			}
+			plot << "\")" << endl;*/
 		}
 	}
 }

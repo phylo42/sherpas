@@ -21,12 +21,12 @@ phylo_node::phylo_node()
 }
 
 phylo_node::phylo_node(int id, const std::string& label, float branch_length,
-    const std::vector<phylo_node*>& children, phylo_node* parent)
-    : _id(id)
-    , _label(label)
-    , _branch_length(branch_length)
-    , _children(children)
-    , _parent(parent)
+	const std::vector<phylo_node*>& children, phylo_node* parent)
+	: _id(id)
+	, _label(label)
+	, _branch_length(branch_length)
+	, _children(children)
+	, _parent(parent)
 {
 }
 
@@ -46,6 +46,11 @@ bool phylo_node::operator==(const phylo_node& rhs) const noexcept
 bool phylo_node::operator!=(const phylo_node& rhs) const noexcept
 {
     return !operator==(rhs);
+}
+
+int phylo_node::get_id() const
+{
+    return _id;
 }
 
 std::string phylo_node::get_label() const
@@ -70,11 +75,11 @@ std::vector<phylo_node*> phylo_node::get_children() const
 
 void phylo_node::_clean()
 {
-    _id = -1;
-    _label = "";
-    _branch_length = 0;
-    _children.clear();
-    _parent = nullptr;
+	_id = -1;
+	_label = "";
+	_branch_length = 0;
+	_children.clear();
+	_parent = nullptr;
 }
 
 void phylo_node::_add_children(phylo_node* node)

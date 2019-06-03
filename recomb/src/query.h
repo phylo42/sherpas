@@ -16,17 +16,15 @@
 #include <core/phylo_kmer_db.h>
 #include <core/kmer_iterator.h>
 
-core::phylo_kmer_db GroupDb(const core::phylo_kmer_db& db, std::vector<int> groups, int g);
-
 std::vector<core::phylo_kmer_db::key_type> encode_string_views(std::string_view long_read, const size_t kmer_size);
 
 void search(const core::phylo_kmer_db& db, core::phylo_kmer_db::key_type key);
 
 void readQuery(std::vector<core::phylo_kmer_db::key_type> codes, const core::phylo_kmer_db& db, std::vector<Arc>* branches, Htree *H);
 
-void printScore(std::vector<Arc*> result);
+void printScore(std::vector<Arc*> result, std::vector<std::string> ref);
 
-void printChange(std::vector<std::vector<Arc*>> result, int a);
+void printChange(std::vector<std::vector<Arc*>> result, int a, std::vector<std::string> ref);
 
 double lRatio(std::vector<Arc*> result, int i);
 

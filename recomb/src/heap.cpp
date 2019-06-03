@@ -90,7 +90,7 @@ int Htree::right(int i)
 	return r;
 }
 
-void Htree::print(int m)
+void Htree::print(int m, std::vector<std::string> ref)
 {
 	int s=m_res.size();
 	if(m>s || m<0)
@@ -99,8 +99,8 @@ void Htree::print(int m)
 	}
 	for(int i=0; i<m; i++)
 	{
-		cout << i+1 << ". arc ";
-		(*m_res[i]).printPlace();
+		cout << i+1 << ". ";
+		(*m_res[i]).printPlace(ref);
 		cout << ": " << (*m_res[i]).getScore() << endl;
 	}
 }

@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcore_p.a  CMakeFiles/core_p.dir/src/core/phylo_kmer.cpp.o CMakeFiles/core_p.dir/src/core/phylo_kmer_db.cpp.o CMakeFiles/core_p.dir/src/core/kmer_iterator.cpp.o CMakeFiles/core_p.dir/src/core/phylo_tree.cpp.o
-/usr/bin/ranlib libcore_p.a

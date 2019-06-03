@@ -30,7 +30,8 @@ namespace core
         /// WARNING: this operator only checks for the id and label fields
         bool operator==(const phylo_node& rhs) const noexcept;
         bool operator!=(const phylo_node& rhs) const noexcept;
-
+	
+	int get_id() const;
         std::string get_label() const;
         phylo_node* get_parent() const;
         float get_branch_length() const;
@@ -46,7 +47,6 @@ namespace core
     private:
         // TODO: test if _id convention is the same as RAPPAS' exented_tree_id one
         int _id;
-
         std::string _label;
         float _branch_length;
         std::vector<phylo_node*> _children;

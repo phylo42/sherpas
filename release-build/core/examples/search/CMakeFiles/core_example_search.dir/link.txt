@@ -1,1 +1,0 @@
-/usr/bin/c++  -O3 -DNDEBUG   CMakeFiles/core_example_search.dir/src/main.cpp.o  -o core_example_search ../../core/libcore_n.a ../../utils/libutils.a /usr/lib/x86_64-linux-gnu/libboost_iostreams.so /usr/lib/x86_64-linux-gnu/libboost_regex.so /usr/lib/x86_64-linux-gnu/libboost_serialization.so 

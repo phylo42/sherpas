@@ -21,13 +21,10 @@ public:
 	void updateCheck(int i);
 	int ArcCheck();
 	int getPlace();
-	void printPlace();
+	void printPlace(std::vector<std::string> ref);
 	double getScore();
 	int getKmers();
 	int compareArc(int a);
-	int BinSearch(std::vector<Arc*> list, int s);
-
-
 
 private:
 	int m_place;

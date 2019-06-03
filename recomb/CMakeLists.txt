@@ -11,6 +11,8 @@ add_executable(
         src/query.cpp
         src/write.cpp
         src/write.h
+	src/groups.cpp
+        src/groups.h
 )
 
 find_package(Boost REQUIRED COMPONENTS program_options filesystem iostreams)

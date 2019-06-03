@@ -28,13 +28,46 @@ int max(std::vector<int> list)
 	return res;
 }
 
+void getId(std::string align, std::string res) //only once; depends on the sequences name; current version works for names starting with "Ref.[group_id]."
+{
+	ifstream read(align);
+	int i=0;
+	int c=0;
+	if(read)
+	{
+		ofstream write(res+"leaves-summary.txt");
+		std::string line;
+		while(getline(read,line))
+		{
+			if(line[0]=='>')
+			{
+				while(line[i] !='.' || c<1)
+				{
+					if(line[i]=='.')
+					{
+						c++;
+					}
+					i++;
+				}
+				write << line.substr(1) << " " << line.substr(5,i-5) << endl;
+				i=0;
+				c=0;
+			}
+		}
+	}
+	else
+	{
+		cout << "No file there (or something like that)" << endl;
+	}
+}
+
 void recordGroups(std::string doc,std::vector<int>* leafMap, std::vector<std::string>* ref)
 {
 	if((*leafMap).size() > 0 || (*ref).size() > 0)
 	{
 		cout << "careful; references nonempty" << endl;
 	}
-	ifstream read(doc);  //Ouverture d'un fichier en lecture
+	ifstream read(doc);
 	if(read)
 	{
 		//(*leafMap).push_back(0);
@@ -90,7 +123,7 @@ std::vector<int> makeGroups(core::phylo_tree& tree, std::vector<int> leafMap)
 			else
 			{
 				groups[i]=m;
-				m++; //active -> top arcs grouped individually ; commented out -> top arcs grouped all together
+				//m++; //active -> top arcs grouped individually ; commented out -> top arcs grouped all together
 			}
 		}
     	}

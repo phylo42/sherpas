@@ -26,7 +26,7 @@ public:
 	int parent(int i);
 	int left(int i);
 	int right(int i);
-	void print(int i);
+	void print(int i, std::vector<std::string> ref);
 	int size();
 	void swap(int i, int j);
 	void push(Arc* a);
