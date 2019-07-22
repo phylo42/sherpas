@@ -34,11 +34,6 @@ bool core::operator==(const phylo_kmer& lhs, const phylo_kmer& rhs) noexcept
     }
 }
 
-phylo_kmer core::make_napk()
-{
-    return phylo_kmer { phylo_kmer::nan_key, phylo_kmer::nan_score };
-}
-
 phylo_kmer::score_type core::score_threshold(size_t kmer_size)
 {
     return std::log10(powf(1.0f / seq_traits::alphabet_size, phylo_kmer::score_type(kmer_size)));

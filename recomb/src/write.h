@@ -33,7 +33,9 @@ void windInit(std::vector<std::vector<Arc*>> *wind);
 
 //void jplace(std::vector<std::string> q, std::string t, std::vector<std::vector<Kmer*>> list, std::vector<Arc>* branches, std::vector<std::string> infos, std::vector<Arc*> *res);
 
-void SciPlot(int n, std::string_view query, std::vector<std::string> ref, std::vector<Arc> branches, std::vector<std::vector<Arc*>> res);
+void SciPlot(int n, std::string_view query, std::vector<std::string> ref, std::vector<Arc> branches, std::vector<std::vector<Arc*>> res, int shift);
+
+void Csv(int n, std::string query, std::vector<std::string> ref, std::vector<std::vector<Arc*>> res, int shift);
 
 
 #endif /* WRITE_H_ */

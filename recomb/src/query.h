@@ -24,7 +24,7 @@ void readQuery(std::vector<core::phylo_kmer_db::key_type> codes, const core::phy
 
 void printScore(std::vector<Arc*> result, std::vector<std::string> ref);
 
-void printChange(std::vector<std::vector<Arc*>> result, int a, std::vector<std::string> ref);
+void printChange(std::vector<std::vector<Arc*>> result, int shift, std::vector<std::string> ref);
 
 double lRatio(std::vector<Arc*> result, int i);
 

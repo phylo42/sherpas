@@ -8,14 +8,14 @@
 
 namespace core
 {
-    static const unsigned int protocol_version = 1;
+    static const unsigned int protocol_version = 2;
 
     ::core::phylo_kmer_db load(const std::string& filename)
     {
         std::ifstream ifs(filename);
         boost::archive::binary_iarchive ia(ifs);
 
-        ::core::phylo_kmer_db db { 0 };
+        ::core::phylo_kmer_db db { 0, "" };
         ia & db;
         return db;
     }
@@ -34,6 +34,9 @@ namespace boost {
         template<class Archive>
         inline void save(Archive& ar, const ::core::phylo_kmer_db& db, const unsigned int /*version*/)
         {
+            const auto original_tree_view = std::string{ db.tree() };
+            ar & original_tree_view;
+
             size_t kmer_size = db.kmer_size();
             ar & kmer_size;
 
@@ -58,6 +61,9 @@ namespace boost {
             {
                 throw std::runtime_error("Failed to load database: this database was built with older version of RAPPAS.");
             }
+            std::string tree = "";
+            ar & tree;
+            db._tree = tree;
 
             size_t kmer_size = 0;
             ar & kmer_size;
@@ -76,7 +82,7 @@ namespace boost {
                     ::core::phylo_kmer::branch_type branch = ::core::phylo_kmer::nan_branch;
                     ::core::phylo_kmer::score_type score = ::core::phylo_kmer::nan_score;
                     ar & branch & score;
-                    db.put(key, branch, score);
+                    db.insert(key, { branch, score });
                 }
             }
         }

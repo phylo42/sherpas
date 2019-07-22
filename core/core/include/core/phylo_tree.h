@@ -3,26 +3,41 @@
 
 #include <string>
 #include <vector>
-#include <algorithm>
-#include <meta.h>
+#include <unordered_map>
 
 namespace core
 {
-    class newick_parser;
+    class phylo_tree;
+}
 
-    template<bool IsConst>
-    class phylo_tree_iterator;
+namespace rappas
+{
+    namespace io
+    {
+        class newick_parser;
+        core::phylo_tree load_newick(const std::string& file_name);
+    }
+}
 
+namespace core
+{
+    //////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief A node of a phylogenetic tree.
     class phylo_node
     {
-        friend newick_parser;
-        template<bool IsConst> friend class phylo_tree_iterator;
-    public:
-        phylo_node();
+        friend rappas::io::newick_parser;
+        friend core::phylo_tree;
 
-        explicit phylo_node(int id, const std::string& label, float branch_length,
-                            const std::vector<phylo_node*>& children, phylo_node* parent);
+    public:
+        /// Member types
+
+        /// \brief Node post-/pre-order id type
+        using id_type = int;
+
+        /// \brief Branch length type
+        using branch_length_type = double;
+
+        phylo_node();
         phylo_node(const phylo_node& other) = delete;
         phylo_node& operator=(const phylo_node&) = delete;
         ~phylo_node() noexcept;
@@ -30,11 +45,12 @@ namespace core
         /// WARNING: this operator only checks for the id and label fields
         bool operator==(const phylo_node& rhs) const noexcept;
         bool operator!=(const phylo_node& rhs) const noexcept;
-	
-	int get_id() const;
-        std::string get_label() const;
-        phylo_node* get_parent() const;
-        float get_branch_length() const;
+
+        std::string get_label() const noexcept;
+        phylo_node* get_parent() const noexcept;
+        id_type get_preorder_id() const noexcept;
+        id_type get_postorder_id() const noexcept;
+        branch_length_type get_branch_length() const noexcept;
 
         std::vector<phylo_node*> get_children() const;
 
@@ -45,146 +61,118 @@ namespace core
         void _add_children(phylo_node* node);
 
     private:
-        // TODO: test if _id convention is the same as RAPPAS' exented_tree_id one
-        int _id;
+        id_type _preorder_id;
+        id_type _postorder_id;
         std::string _label;
-        float _branch_length;
+        branch_length_type _branch_length;
+
         std::vector<phylo_node*> _children;
         phylo_node* _parent;
     };
 
-    phylo_node* get_leftmost_child(phylo_node* root);
-
-    /// \brief A forward access (non-)const iterator for phylo_node objects. Performs a depth-first
-    /// search among a subtree of input phylo_node.
-    template <bool IsConst>
-    class phylo_tree_iterator
+    namespace impl
     {
-    public:
-        using iterator_category = std::forward_iterator_tag;
-        using reference = typename rappas::choose<IsConst, const phylo_node&, phylo_node&>::type;
-        using pointer = typename rappas::choose<IsConst, const phylo_node*, phylo_node*>::type;
+        /// \brief Finds the leftmost leaf of a subtree.
+        /// \details Used to start a depth-first search
+        phylo_node* get_leftmost_leaf(phylo_node* root) noexcept;
 
-    public:
-        phylo_tree_iterator()
-            : phylo_tree_iterator(nullptr)
-        {}
-
-        explicit phylo_tree_iterator(phylo_node* node)
-            : _current(node)
-        {}
-
-        phylo_tree_iterator(const phylo_tree_iterator& other) = default;
-        ~phylo_tree_iterator() noexcept = default;
-
-        phylo_tree_iterator& operator=(const phylo_tree_iterator& rhs)
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+        /// \brief A forward access non-const iterator for phylo_node objects. Performs a postorder depth-first
+        /// search among a subtree of an input phylo_node.
+        class postorder_tree_iterator
         {
-            if (*this != rhs)
-            {
-                _current = rhs._current;
-            }
-            return *this;
-        }
+        public:
+            using iterator_category = std::forward_iterator_tag;
+            using reference = phylo_node&;
+            using pointer = phylo_node*;
 
-        bool operator==(const phylo_tree_iterator& rhs) const noexcept
-        {
-            return _current == rhs._current;
-        }
+        public:
+            postorder_tree_iterator() noexcept;
+            explicit postorder_tree_iterator(phylo_node* node) noexcept;
+            postorder_tree_iterator(const postorder_tree_iterator& other) = default;
+            postorder_tree_iterator& operator=(const postorder_tree_iterator& rhs) noexcept;
+            postorder_tree_iterator& operator=(postorder_tree_iterator&&) = delete;
+            ~postorder_tree_iterator() noexcept = default;
 
-        bool operator!=(const phylo_tree_iterator& rhs) const noexcept
-        {
-            return !(*this == rhs);
-        }
+            /// \brief Converts an iterator to the const phylo_node* it points to.
+            operator pointer() const noexcept;
 
-        phylo_tree_iterator& operator++()
-        {
-            /// Go upside down if necessary. We need to know the index of current node in the parent->children
-            phylo_node* temp = _current->_parent;
-            int idx = _id_in_parent(_current);
-            while (idx == -1 && temp)
-            {
-                temp = _current->_parent;
-                idx = _id_in_parent(_current);
-            }
+            bool operator==(const postorder_tree_iterator& rhs) const noexcept;
+            bool operator!=(const postorder_tree_iterator& rhs) const noexcept;
 
-            /// the end of the tree
-            if (temp == nullptr)
-            {
-                _current = nullptr;
-            }
-            /// visit the next sibling
-            else if ((size_t)idx + 1 < temp->_children.size())
-            {
-                _current = temp->_children[idx + 1];
-                _current = get_leftmost_child(_current);
-            }
-            /// visit the parent
-            else
-            {
-                _current = temp;
-            }
-            return *this;
-        }
+            /// \brief The increment operator. Contains the logic of depth-first search
+            postorder_tree_iterator& operator++();
 
-        reference operator*() const
-        {
-            return *_current;
-        }
+            /// Access
+            reference operator*() const;
+            pointer operator->() const noexcept;
 
-        pointer operator->() const
-        {
-            return _current;
-        }
+        private:
+            /// \brief Finds an index of this node in the parent's array of children
+            phylo_node::id_type _id_in_parent(const phylo_node* node) const;
 
-    private:
-        int _id_in_parent(phylo_node* node) const
-        {
-            if (node->_parent != nullptr)
-            {
-                const auto& children = node->_parent->_children;
-                const auto it = std::find(begin(children), end(children), node);
-                if (it != end(children))
-                {
-                    return distance(begin(children), it);
-                }
-            }
-            return -1;
-        }
-    private:
-        phylo_node* _current;
-    };
+        private:
+            phylo_node* _current;
+            phylo_node::id_type _postorder_id;
+        };
+    }
 
-
+    //////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief A phylogenetic tree class
-    /// \defails phylo_tree is only constructable with a factory function. Also non-copyable and non-movable.
-    /// \sa load_newick
+    /// \defails phylo_tree is only constructable by the rappas::io::load_newick function.
+    /// Non-copyable. Phylo-nodes are not modifiable.
+    /// \sa core::phylo_node, rappas::io::load_newick
     class phylo_tree
     {
-        friend phylo_tree load_newick(const std::string& file_name);
-
     public:
-        using const_iterator = phylo_tree_iterator<true>;
+        /// Member types
+        /// \brief A const iterator type. Performs a post-order depth-first search
+        using const_iterator = impl::postorder_tree_iterator;
+        using value_pointer = phylo_node*;
 
-        phylo_tree(phylo_tree&&) = delete;
+        /// Ctors, dtor and operator=
+        phylo_tree(value_pointer root, size_t node_count);
+        phylo_tree(phylo_tree&&) noexcept = default;
         phylo_tree(const phylo_tree&) = delete;
         phylo_tree& operator=(const phylo_tree&) = delete;
         phylo_tree& operator=(phylo_tree&&) = delete;
         ~phylo_tree() noexcept;
 
-        const_iterator begin() const;
-        const_iterator end() const;
 
-        size_t get_node_count() const;
+        /// Iterators
+        /// \brief Returns an iterator to the beginning
+        const_iterator begin() const noexcept;
+        /// \brief Returns an iterator to the beginning
+        const_iterator end() const noexcept;
 
+
+        /// Access
+        /// \brief Returns the number of nodes in a tree.
+        size_t get_node_count() const noexcept;
+        /// \brief Returns a pointer to the root node.
+        value_pointer get_root() const noexcept;
+        /// \brief Returns a pointer to a phylo_node with a given preorder_id, if presented.
+        /// \details This operation does not require any traversal and implemented in O(1).
+        /// \sa get_by_postorder_id
+        std::optional<core::phylo_node*> get_by_preorder_id(phylo_node::id_type preorder_id) const noexcept;
+        /// \brief Returns a pointer to a phylo_node with a given postorder_id, if presented.
+        /// \details This operation does not require any traversal and implemented in O(1).
+        /// \sa get_by_preorder_id
+        std::optional<core::phylo_node*> get_by_postorder_id(phylo_node::id_type preorder_id) const noexcept;
     private:
-        phylo_tree(phylo_node* root, size_t node_count) noexcept;
+        /// \brief A root node.
+        value_pointer _root;
 
-        phylo_node* _root;
+        /// \brief A total number of nodes in a tree.
+        /// \details WARNING: This class does not double check if the tree actually have this
+        /// number of nodes, it is just passed as an argument in the constructor.
         size_t _node_count;
-    };
 
-    /// A factory function to construct a phylo_tree from a newick file
-    phylo_tree load_newick(const std::string& file_name);
+        /// \brief A map for phylo_node_preorder_id-> phylo_node for fast access
+        std::unordered_map<phylo_node::id_type, core::phylo_node*> _preorder_id_node_mapping;
+        /// \brief A map for phylo_node_postorder_id-> phylo_node for fast access
+        std::unordered_map<phylo_node::id_type, core::phylo_node*> _postorder_id_node_mapping;
+    };
 }
 
 #endif

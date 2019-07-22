@@ -1,3 +1,16 @@
+v0.1.3
+- seq_traits<dna>::key_type now is uint32_t
+- phylo_kmer_db now does not check the values pass to insert in the db. The old put() method replaced by insert()
+- Now rappas::core can be compiled against different hash map implementations (see CMakeLists files)
+- Now phylo_kmer_db contains a newick-formatted original tree. Added the tree() method
+- Added phylo_tree.h (moved from rappas-build)
+- Added newick.h (load_newick, parse_newick, to_newick in rappas::io)
+- Reimplemented core::phylo_tree. Now it also contains pre-/post-order node ids and fast search by node id (get_by_preorder_id, get_by_postorder_id)
+- Added utils/ (part of rappas::io namespace)
+- A lot of other small changes
+- Updated examples
+- Updated tests
+
 v0.1.2
 - core::encode_kmers and core::to_kmers now support gaps and N's
 - core::phylo_kmer_db now has kmer_size()

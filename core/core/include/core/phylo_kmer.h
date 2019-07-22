@@ -25,7 +25,7 @@ namespace core
         using branch_type = uint16_t;
 
         /// The type of a phylokmer's position in the alignment
-        using pos_type = uint32_t;
+        using pos_type = int32_t;
 
         static constexpr key_type nan_key = std::numeric_limits<phylo_kmer::key_type>::max();
         static constexpr score_type nan_score = std::numeric_limits<phylo_kmer::score_type>::quiet_NaN();
@@ -38,10 +38,6 @@ namespace core
     };
 
     bool operator==(const phylo_kmer& lhs, const phylo_kmer& rhs) noexcept;
-
-    /// Returns a phylo_kmer with special values, considered as NotAPhyloKmer. This phylokmer
-    /// can not be equeal to any other phylo kmer (including itself)
-    phylo_kmer make_napk();
 
     /// Returns a minumum score
     phylo_kmer::score_type score_threshold(size_t kmer_size);

@@ -17,11 +17,11 @@
 
 int max(std::vector<int> list);
 
-void getId(std::string align, std::string res);
+std::string groupFromName(std::string leaf);
 
-void recordGroups(std::string doc,std::vector<int>* leafMap, std::vector<std::string>* ref);
+void getArcRef(core::phylo_tree& tree, std::vector<std::string>* ref);
 
-std::vector<int> makeGroups(core::phylo_tree& tree, std::vector<int> leafMap);
+void getDb2Ref(core::phylo_tree& tree, std::vector<std::string>* ref, std::vector<int>* group_id);
 
 core::phylo_kmer_db GroupDb(const core::phylo_kmer_db& db, std::vector<int> groups);
 

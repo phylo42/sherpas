@@ -199,7 +199,7 @@ void windInit(std::vector<std::vector<Arc*>> *wind)
 	}
 }*/
 
-void SciPlot(int n, std::string_view query, std::vector<std::string> ref, std::vector<Arc> branches, std::vector<std::vector<Arc*>> res)
+void SciPlot(int n, std::string_view query, std::vector<std::string> ref, std::vector<Arc> branches, std::vector<std::vector<Arc*>> res, int shift)
 {
 	int w=res.size();
 	if(w>0)
@@ -221,7 +221,7 @@ void SciPlot(int n, std::string_view query, std::vector<std::string> ref, std::v
 				for(int j=0; j<m; j++)
 				{
 					a=(*res[i][j]).getPlace();
-					plot << "M(" << a << "," << i+1 <<")=" << (*res[i][j]).getScore() << endl;
+					plot << "M(" << a << "," << i+shift <<")=" << (*res[i][j]).getScore() << endl;
 					plot << "check(" << a << ")=1" << endl;
 				}
 			}
@@ -240,6 +240,38 @@ void SciPlot(int n, std::string_view query, std::vector<std::string> ref, std::v
 				}
 			}
 			plot << "\")" << endl;*/
+		}
+	}
+}
+
+void Csv(int n, std::string query, std::vector<std::string> ref, std::vector<std::vector<Arc*>> res, int shift)
+{
+	int w=res.size();
+	int a=0;
+	if(w>0)
+	{
+		int m=res[0].size();
+		std::string ad="/home/guillaume/Documents/LIRMM/Samples/res_" + query + ".csv";
+		ofstream plot(ad);
+		if(plot)
+		{
+			//plot << "// query: " << query << endl;
+			for(int i=0; i<w; i++)
+			{
+				for(int j=0; j<m; j++)
+				{
+					a=(*res[i][j]).getPlace();
+					if(a<ref.size())
+					{
+						plot << i+shift << "," << ref[a] << "," << (*res[i][j]).getScore() << endl;
+					}
+					else
+					{
+						plot << i+shift << "," << a << "," << (*res[i][j]).getScore() << endl;
+					}
+				}
+			}
+
 		}
 	}
 }

@@ -87,22 +87,23 @@ void printScore(std::vector<Arc*> result, std::vector<std::string> ref)
 	}
 }
 
-void printChange(std::vector<std::vector<Arc*>> result, int a, std::vector<std::string> ref)
+void printChange(std::vector<std::vector<Arc*>> result, int shift, std::vector<std::string> ref)
 {
 	int s=result.size();
 	int c=0;
 	int aref=-1;
 	for(int i=0; i<s; i++)
 	{
-		if((*result[i][0]).getPlace() != aref || a==0)
+		if(ref[(*result[i][0]).getPlace()] != ref[aref])
 		{
-			cout << "W" << i << ": " << endl;
-			printScore(result[i], ref);
+			cout << i+shift << ",";
+			//printScore(result[i], ref);
 			aref=(*result[i][0]).getPlace();
-			cout << endl;
+			cout << ref[aref] << ",";
 			c++;
 		}
 	}
+	cout << endl;
 	cout << "->" << c << " slices" << endl;
 }
 
@@ -135,7 +136,7 @@ void slidingWindow(std::vector<core::phylo_kmer_db::key_type> codes, int sw, int
 	if(sw>q+k-1 || sw<k)
 	{
 		cout << "Dimension problems: check window size vs k-mer size and/or window size vs query length" << endl;
-		cout << k << "<" << sw << "<" << q+k-1 << endl;
+		cout << k << "<" << sw << "<" << q << endl;
 	}
 	else
 	{

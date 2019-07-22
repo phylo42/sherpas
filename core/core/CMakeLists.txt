@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project(rappas_core LANGUAGES CXX VERSION 0.1.3)
+project(rappas_core LANGUAGES CXX VERSION 0.1.4)
 
 ##########################################################################################
 # PROTEINS
@@ -44,7 +44,7 @@ target_sources(core_n
             src/core/phylo_kmer_db.cpp
             src/core/kmer_iterator.cpp
             src/core/phylo_tree.cpp
-
+            src/core/newick.cpp
         )
 
 find_package(Boost REQUIRED COMPONENTS serialization unit_test_framework)
@@ -71,7 +71,6 @@ target_link_libraries(core_n
             rappas::utils
             Boost::serialization
             ${HASH_MAP_IMPLEMENTATION}
-            #martinus::robin_hood_map
         )
 
 target_include_directories(core_n

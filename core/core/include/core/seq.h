@@ -38,7 +38,7 @@ namespace core
         /// \brief The type used to store a k-mer value.
         /// \details K-mers are not stored as strings or char* values, but as values of this type instead.
         /// For example for DNA and k==3 the k-mer "AAA" == 000ul if kmer_t is unsigned long.
-        using key_type = uint64_t;
+        using key_type = uint32_t;
 
         static constexpr std::optional<uint8_t> key_to_code(char_type base)
         {
@@ -141,13 +141,13 @@ namespace core
     template<>
     constexpr seq_traits::key_type bit_length<dna>()
     {
-        return 2ul;
+        return seq_traits::key_type{ 2u };
     }
 
     template<>
     constexpr seq_traits::key_type rightest_symbol_mask<dna>()
     {
-        return ~0b11ul;
+        return seq_traits::key_type{ ~0b11u };
     }
 
 #elif SEQ_TYPE_AA

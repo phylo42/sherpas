@@ -40,7 +40,7 @@ core::phylo_kmer_db create_db_from_map(const MapType& values, size_t kmer_size)
     {
         for (const auto& [branch, score] : entries)
         {
-            db.put(key, branch, score);
+            db.insert(key, { branch, score });
         }
     }
     return db;
@@ -66,34 +66,6 @@ TEST_CASE("K-mer size", "[database]")
     const core::phylo_kmer_db db { kmer_size };
 
     REQUIRE(db.kmer_size() == kmer_size);
-}
-
-TEST_CASE("Duplicate key-value pair", "[database]")
-{
-    core::phylo_kmer_db db { 3 };
-
-    db.put(0, 0, 1.0);
-    REQUIRE(db.size() == 1);
-    db.put(0, 0, 0.99);
-    REQUIRE(db.size() == 1);
-    db.put(0, 0, 1.01);
-    REQUIRE(db.size() == 1);
-
-    db.put(0, 1, 1.0);
-    REQUIRE(db.size() == 1);
-    db.put(0, 1, 1.001);
-    REQUIRE(db.size() == 1);
-    db.put(0, 1, 1.0);
-    REQUIRE(db.size() == 1);
-    db.put(0, 1, 0.99);
-    REQUIRE(db.size() == 1);
-
-    db.put(1, 0, 1.0);
-    REQUIRE(db.size() == 2);
-    db.put(1, 0, 0.99);
-    REQUIRE(db.size() == 2);
-    db.put(1, 0, 1.01);
-    REQUIRE(db.size() == 2);
 }
 
 template<typename MapType>

@@ -28,137 +28,111 @@ int max(std::vector<int> list)
 	return res;
 }
 
-void getId(std::string align, std::string res) //only once; depends on the sequences name; current version works for names starting with "Ref.[group_id]."
+std::string groupFromName(std::string leaf)
 {
-	ifstream read(align);
 	int i=0;
-	int c=0;
-	if(read)
+	while(leaf[i] !='.' && i<leaf.length())
 	{
-		ofstream write(res+"leaves-summary.txt");
-		std::string line;
-		while(getline(read,line))
-		{
-			if(line[0]=='>')
-			{
-				while(line[i] !='.' || c<1)
-				{
-					if(line[i]=='.')
-					{
-						c++;
-					}
-					i++;
-				}
-				write << line.substr(1) << " " << line.substr(5,i-5) << endl;
-				i=0;
-				c=0;
-			}
-		}
+		i++;
 	}
-	else
-	{
-		cout << "No file there (or something like that)" << endl;
-	}
+	return leaf.substr(0,i);
 }
 
-void recordGroups(std::string doc,std::vector<int>* leafMap, std::vector<std::string>* ref)
+void getArcRef(core::phylo_tree& tree, std::vector<std::string>* ref)
 {
-	if((*leafMap).size() > 0 || (*ref).size() > 0)
+	if((*ref).size()>0)
 	{
-		cout << "careful; references nonempty" << endl;
+		cout << "Warning: vectors to be filled-up are nonempty" << endl;
 	}
-	ifstream read(doc);
-	if(read)
-	{
-		//(*leafMap).push_back(0);
-		(*ref).push_back("out");
-		std::string line;
-		std::string group;
-		int i=0;
-		int g=0;
-		while(getline(read,line))
-		{
-			while((line[i] !=' ' || line[i+1]==' ') && i<line.length())
-			{
-				i++;
-			}
-			group=line.substr(i+1);
-			//cout << group << endl;
-			if(group != (*ref).back())
-			{
-				(*ref).push_back(group);
-				g++;
-			}
-			(*leafMap).push_back(g);
-			i=0;
-		}
-	}
-	else
-	{
-		cout << "No file there (or something like that)" << endl;
-	}
-}
-
-std::vector<int> makeGroups(core::phylo_tree& tree, std::vector<int> leafMap)
-{
-	int tree_size=tree.get_node_count();
-	std::vector<int> groups(tree_size,-1);
-	int l=0;
-	int i=0;
-	int m=max(leafMap)+1;
+	int i=-1;
+	std::string group="";
 	for (const auto& node : tree)
    	{
-		i=node.get_id();
-        	if(node.get_label()!="")
+		i=node.get_postorder_id();
+		if((node.get_children()).size()==0)
 		{
-			groups[i]=leafMap[l];
-			l++;
+			group=groupFromName(node.get_label());
 		}
 		else
 		{
-			if(groups[(*node.get_children()[0]).get_id()] == groups[(*node.get_children()[1]).get_id()])
+			if((*ref)[(*node.get_children()[0]).get_postorder_id()] == (*ref)[(*node.get_children()[1]).get_postorder_id()])
 			{
-				groups[i]=groups[(*node.get_children()[1]).get_id()];
+				group=(*ref)[(*node.get_children()[1]).get_postorder_id()];
 			}
 			else
 			{
-				groups[i]=m;
-				//m++; //active -> top arcs grouped individually ; commented out -> top arcs grouped all together
+				group=(*ref)[(*node.get_children()[0]).get_postorder_id()]+ "*" + (*ref)[(*node.get_children()[1]).get_postorder_id()];
 			}
 		}
+		(*ref).push_back(group);
+		cout << i << ": " << (*ref)[i] << endl;
     	}
-	return groups;
+}
+
+void getDb2Ref(core::phylo_tree& tree, std::vector<std::string>* ref, std::vector<int>* group_id)
+{
+	if((*ref).size()>0 ||(*group_id).size()>0 )
+	{
+		cout << "Warning: vectors to be filled-up are nonempty" << endl;
+	}
+	int i=-1;
+	std::string group="";
+	int l=-1;
+	std::string gtemp="";
+	for (const auto& node : tree)
+   	{
+		i=node.get_postorder_id();
+        	if((node.get_children()).size()==0)
+		{
+			if(groupFromName(node.get_label()) != gtemp)
+			{
+				l++;
+				gtemp=groupFromName(node.get_label());
+				(*ref).push_back(gtemp);
+				//cout << l << ": " << (*ref)[l] << endl;
+			}
+		}
+		else
+		{
+			if((*group_id)[(*node.get_children()[0]).get_postorder_id()] != (*group_id)[(*node.get_children()[1]).get_postorder_id()])
+			{
+				l++;
+				(*ref).push_back((*ref)[(*group_id)[(*node.get_children()[0]).get_postorder_id()]]+ "*" + (*ref)[(*group_id)[(*node.get_children()[1]).get_postorder_id()]]);
+				//cout << l << ": " << (*ref)[l] << endl;
+			}
+		}
+		(*group_id).push_back(l);
+		//cout << i << ": " << (*group_id)[i] << endl;
+    	}
 }
 
 core::phylo_kmer_db GroupDb(const core::phylo_kmer_db& db, std::vector<int> groups)
 {
-	core::phylo_kmer_db db2 {groups.size()};
-	double thr=core::score_threshold(db.kmer_size());
+	size_t k=db.kmer_size();
+	core::phylo_kmer_db db2 {k, std::string{db.tree()} };
+	double thr=core::score_threshold(k);
 	int g=max(groups)+1;
+	//cout << g << endl;
 	std::vector<double> bg(g, thr);
-	for(int key=0; key<db.size(); key++)
-		if (auto entries = db.search(key); entries)
+	for(const auto& [key, entries] : db)
+	{
+		//cout << key << endl;
+		for (const auto& [branch, score] : entries)
 		{
-			for (const auto& [branch, score] : *entries)
+			if(score>bg[groups[branch]])
 			{
-				if(score>bg[groups[branch]])
+				bg[groups[branch]]=score;
+			}
+		}
+		for(int i=0; i<g; i++)
+		{
+			if(bg[i] > thr)
 				{
-					bg[groups[branch]]=score;
+					db2.insert(key, {i, bg[i]});
+					bg[i]=thr;
 				}
-			}
-			for(int i=0; i<g; i++)
-			{
-				if(bg[i] > thr)
-					{
-						db2.put(key, i, bg[i]);
-						bg[i]=thr;
-					}
-			}
 		}
-		else
-		{
-		std::cout << "Key " << key << " not found.\n";
-		}
+	}
 	return db2;
 }
 
