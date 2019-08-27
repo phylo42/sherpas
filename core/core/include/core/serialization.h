@@ -15,7 +15,7 @@ namespace core
         std::ifstream ifs(filename);
         boost::archive::binary_iarchive ia(ifs);
 
-        ::core::phylo_kmer_db db { 0, "" };
+        ::core::phylo_kmer_db db { 0, 0.0, "" };
         ia & db;
         return db;
     }
@@ -39,6 +39,9 @@ namespace boost {
 
             size_t kmer_size = db.kmer_size();
             ar & kmer_size;
+
+            ::core::phylo_kmer::score_type omega = db.omega();
+            ar & omega;
 
             size_t table_size = db.size();
             ar & table_size;
@@ -68,6 +71,10 @@ namespace boost {
             size_t kmer_size = 0;
             ar & kmer_size;
             db._kmer_size = kmer_size;
+
+            ::core::phylo_kmer::score_type omega = 0;
+            ar & omega;
+            db._omega = omega;
 
             size_t table_size = 0;
             ar & table_size;

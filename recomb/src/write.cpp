@@ -14,146 +14,12 @@
 #include "write.h"
 
 using namespace std;
-
-int findArc(int a, std::string t)
-{
-	int res=-1;
-	int s=t.length();
-	int i=0;
-	int j=0;
-	int test=-1;
-	char c;
-	std::string sub="";
-	while(i<s && res==-1)
-	{
-		c=t[i];
-		if(c==':')
-		{
-			j=i;
-		}
-		if(c=='{')
-		{
-			sub=t.substr(i+1);
-			test=std::stoi(sub,nullptr);
-			if(test==a)
-			{
-				res=j+1;
-			}
-		}
-
-		i++;
-	}
-	return res;
-}
-
-double lengthArc(int pos, std::string t)
-{
-	double res=-1;
-	if (pos>-1)
-	{
-		std::string sub=t.substr(pos);
-		res=std::stod(sub,nullptr);
-	}
-	return res;
-}
-
-std::string subtree(int pos, std::string t)
-{
-	std::string sub="(";
-	if(pos>-1)
-	{
-		int p=pos-2;
-		if(t[p]==')')
-		{
-			int brackets=1;
-			p+=-1;
-			while(brackets !=0)
-			{
-				brackets+=(t[p]==')')-(t[p]=='(');
-				p+=-1;
-			}
-			sub+=t.substr(p+2,pos-p-4);
-		}
-		else
-		{
-			while(t[p]!=',' && t[p]!='(')
-			{
-				p+=-1;
-			}
-			sub+=t.substr(p+1,pos-p-2);
-		}
-	}
-	sub+=");";
-	return sub;
-}
-
-double distNode(int pos, std::string t)
-{
-	double res=0;
-	if(pos>-1)
-	{
-		res+=lengthArc(pos,t);
-		int s=t.length();
-		for(int p=pos; p<s; p++)
-		{
-			if(t[p]==')' && t[p+1]!=';')
-			{
-				res+=lengthArc(p+2,t);
-				p++;
-			}
-		}
-	}
-	return res;
-}
-
-int nbLeaves(std::string t)
-{
-	double res=0;
-	int s=t.length();
-	for(int p=0; p<s; p++)
-	{
-		if((t[p]=='(' || t[p]== ',') && t[p+1]!='(')
-		{
-			res++;
-		}
-	}
-	return res;
-}
-
-double sumPaths(std::string t)
-{
-	double res=0;
-	int s=t.length();
-	int q=0;
-	for(int p=0; p<s; p++)
-	{
-		if((t[p]=='(' || t[p]== ',') && t[p+1]!='(')
-		{
-			q=p;
-			while(t[q]!=':' && q<s)
-			{
-				q++;
-			}
-			if(q<s)
-			{
-				res+=distNode(q+1,t);
-			}
-			p=q;
-		}
-	}
-	return res;
-}
-
-double lengthPendant(int pos, std::string t)
-{
-	double res=0;
-	std::string sub=subtree(pos,t);
-	res=sumPaths(sub)/nbLeaves(sub)+lengthArc(pos,t)/2;
-	return res;
-}
+//builds output files.
+//empties obsolete informations.
 
 void resInit(std::vector<Arc*> *res)
 {
+	//empties arc* vector
 	int s=(*res).size();
 	for(int i=0; i<s; i++)
 	{
@@ -163,6 +29,7 @@ void resInit(std::vector<Arc*> *res)
 
 void windInit(std::vector<std::vector<Arc*>> *wind)
 {
+	//empties windows vector
 	int s=(*wind).size();
 	for(int i=0; i<s; i++)
 	{
@@ -170,37 +37,10 @@ void windInit(std::vector<std::vector<Arc*>> *wind)
 	}
 }
 
-/*void jplace(std::vector<std::string> q, std::string t, std::vector<std::vector<Kmer*>> list,std::vector<Arc>* branches, std::vector<std::string> infos, std::vector<Arc*> *res)
-{
-	ofstream doc("placement.jplace");
-	if(doc)
-	{
-		doc << "\"tree\":\"" << t << "\"" << endl << "[";
-		int s=q.size();
-		Arc a(0,0);
-		std::vector<Arc*> read(0);
-		for(int i=0; i<s; i++)
-		{
-			resInit(res);
-			doc << "{" << endl;
-			doc << "\"p\":" << endl;
-			readQuery(q[i], list, branches, infos, res);
-			a=*(*res)[bestArc(*res)];
-			doc << "[[" << a.getPlace() << ", "; //Name of winning Arc
-			doc << a.getScore() << ", "; // Score of that Arc
-			int pos=findArc(a.getPlace(), t);
-			doc << lengthArc(pos, t)/2 << ", "; // Place of the ghost node along that Arc (half the length)
-			doc << lengthPendant(pos,t) << "]]" << endl; // Length of the arc from the ghost node to the ghost leaf (mean of the lengths from the ghost nodes to all leaves below)
-			doc << "\"nm\":" << endl;
-			doc << "[[\"query" << i+1 << "\",1]]" << endl;
-			doc << "}" << endl;
-		}
-		doc << "]" << endl;
-	}
-}*/
-
 void SciPlot(int n, std::string_view query, std::vector<std::string> ref, std::vector<Arc> branches, std::vector<std::vector<Arc*>> res, int shift)
 {
+	//SciLab executable file for printing curves.
+	//Not optimized; temporary (until plot possible from csv)
 	int w=res.size();
 	if(w>0)
 	{
@@ -246,12 +86,13 @@ void SciPlot(int n, std::string_view query, std::vector<std::string> ref, std::v
 
 void Csv(int n, std::string query, std::vector<std::string> ref, std::vector<std::vector<Arc*>> res, int shift)
 {
+	//Writes Csv file; Window, Group, Score.
 	int w=res.size();
 	int a=0;
 	if(w>0)
 	{
 		int m=res[0].size();
-		std::string ad="/home/guillaume/Documents/LIRMM/Samples/res_" + query + ".csv";
+		std::string ad="/home/guillaume/Documents/LIRMM/Samples/HIV/holidays-data/res_" + query + ".csv";
 		ofstream plot(ad);
 		if(plot)
 		{
@@ -273,5 +114,168 @@ void Csv(int n, std::string query, std::vector<std::string> ref, std::vector<std
 			}
 
 		}
+	}
+}
+
+int stars(std::string gr)
+{
+	int res=0;
+	for(int i=0; i<gr.length(); i++)
+	{
+		if(gr[i]=='*')
+		{
+			res++;
+		}
+	}
+	return res;
+}
+
+std::string color(std::string gr)
+{
+	std::string res="";
+	if(gr.length()<3)
+	{
+		res=gr;
+	}
+	else
+	{
+		int s=stars(gr);
+		if(s>3)
+		{
+			res="black";
+		}
+		else
+		{
+			std::string ex=to_string(100/(s+1));
+			for(int i=0; i<gr.length(); i++)
+			{
+				if(gr[i]=='*')
+				{
+					res=res+"!" + ex + "!";
+				}
+				else
+				{
+					res.push_back(gr[i]);
+				}
+			}
+		}
+	}
+    return res;
+}
+
+std::string div(std::string bp)
+{
+	std::string res="0.000";
+	int l=bp.length();
+	if(l==4)
+	{
+		res[0]=bp[0];
+	}
+	for(int i=0; i<4; i++)
+	{
+		if (i<=l)
+		{
+		res[5-i]=bp[l-i];
+		}
+	}
+	return res;
+}
+
+void tikzLine(std::string rec, int y)
+//takes line of infos or output; returns command line to plot the info in tikz (needs post-treatment)
+{
+	std::vector<std::string> infos(0);
+	std::string tmp="";
+	for(int i=0; i<rec.length(); i++)
+	{
+		if(rec[i] !=',')
+		{
+			tmp+=rec[i];
+		}
+		else
+		{
+			infos.push_back(tmp);
+			tmp="";
+		}
+	}
+	infos.push_back(tmp);
+	int lines=(infos.size()-1)/2;
+	for(int j=0; j<lines; j++)
+	{
+		cout << "\\fill[color=" << color(infos[2*j+1]) << "](" << div(infos[2*j]) << "," << y << ") rectangle(" << div(infos[2*(j+1)]) << "," << y+1 << ");" << endl;
+	}
+	cout << endl;
+}
+
+void tikzDoc(std::string ref_R, std::string ref_A, std::string ref_B)
+{
+	std::string line="";
+	std::vector<std::string> real (0);
+	std::vector<std::string> resA (0);
+	std::vector<std::string> resB (0);
+	/*ifstream dataR(ref_R);
+	if(dataR)
+	{
+		std::string prefix="0,";
+		while(getline(dataR,line)) //-> does not work on pc ??
+		{
+			if(line[0] !='>')
+			{
+				line=prefix+line;
+				//cout << line << endl;
+				real.push_back(line);
+				cout << endl;
+			}
+		}
+		dataR.close();
+	}*/
+	ifstream dataA(ref_A);
+	if(dataA)
+	{
+		while(getline(dataA,line)) //-> does not work on pc ??
+		{
+			if(line[0] !='>')
+			{
+				//cout << line << endl;
+				resA.push_back(line);
+				cout << endl;
+			}
+		}
+		dataA.close();
+	}
+	ifstream dataB(ref_B);
+	if(dataB)
+	{
+		while(getline(dataB,line)) //-> does not work on pc ??
+		{
+			if(line[0] !='>')
+			{
+				//cout << line << endl;
+				resB.push_back(line);
+				cout << endl;
+			}
+		}
+		dataB.close();
+	}
+	if(/*real.size()>0 &&*/ resA.size()>0 && resB.size() > 0)
+	{
+		for(int i=0; i<resA.size(); i++)
+		{
+			cout << "\\begin{tikzpicture}" << endl;
+			cout << "\\draw (0,2.5) node{};" << endl;
+			cout << "\\draw(0,1.5) node{>query " << i+1 <<"};" << endl;
+			cout << "\\draw(-0.5,0.5) node{R};" << endl;
+			cout << "\\draw(-0.5,-1.5) node{A};" << endl;
+			cout << "\\draw(-0.5,-3.5) node{B};" << endl;
+			//tikzLine(real[i],0);
+			tikzLine(resA[i],-2);
+			tikzLine(resB[i],-4);
+			cout << "\\end{tikzpicture}" << endl << endl;
+		}
+	}
+	else
+	{
+		cout << "Something went wrong when reading files" << endl;
+		cout << real.size() << "; " << resA.size() << "; " << resB.size() << endl; 
 	}
 }

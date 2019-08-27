@@ -13,17 +13,19 @@
 #include <string>
 #include <core/phylo_tree.h>
 #include <utils/io/fasta.h>
-//#include "query.h"
+#include "groups.h"
+
+int nucl(char c);
 
 void incr(std::vector<int> *list, int a);
 
-void getId(std::string align, std::string res);
-
 void writeFasta(std::vector<rappas::io::fasta> *sequences, std::string res);
 
-void writeInfo(std::vector<std::string> *summary, std::string res);
+std::vector<rappas::io::fasta> gapRm(std::vector<rappas::io::fasta> *sequences);
 
-std::string cutsec(rappas::io::fasta seq, int cut, int side);
+std::vector<int> splitGroups(std::vector<rappas::io::fasta> *sequences);
+
+void writeInfo(std::vector<std::string> *summary, std::string res);
 
 void split_seq(std::vector<rappas::io::fasta> *sequences, std::vector<int> bp, int seq);
 
@@ -31,7 +33,7 @@ void new_q(std::vector<rappas::io::fasta> *sequences, std::vector<rappas::io::fa
 
 std::string record(std::vector<rappas::io::fasta> *sequences, std::vector<int> bp, std::vector<int> seq);
 
-void random_q(std::vector<rappas::io::fasta> *sequences, std::vector<rappas::io::fasta> *nq, int n, std::vector<std::string> *summary, int b_min, int b_max, int p_max);
+void random_q(std::vector<rappas::io::fasta> *sequences, std::vector<rappas::io::fasta> *nq, int n, std::vector<std::string> *summary, int b_max, int p_max);
 
 
 #endif /* INPUT_H_ */

@@ -23,6 +23,6 @@ int main()
 {
     const auto filename = boost::filesystem::unique_path().string();
     write_test_tree(filename);
-    const auto tree = core::load_newick(filename);
+    const auto tree = rappas::io::load_newick(filename);
     std::cout << tree << std::endl;
 }

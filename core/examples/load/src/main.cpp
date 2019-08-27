@@ -2,25 +2,30 @@
 #include <boost/filesystem.hpp>
 #include <core/phylo_kmer_db.h>
 #include <core/serialization.h>
+#include <iomanip>
 
 core::phylo_kmer_db create_db()
 {
-    core::phylo_kmer_db db { 3 };
+    const size_t kmer_size = 3;
+    const core::phylo_kmer::score_type omega = 1.0;
+    const std::string tree;
+
+    core::phylo_kmer_db db { kmer_size, omega, tree };
 
     /// branch 0
-    db.put(0, 0, 0.00f);
-    db.put(1, 0, 0.10f);
-    db.put(2, 0, 0.20f);
+    db.insert(0, { 0, 0.00f });
+    db.insert(1, { 0, 0.10f });
+    db.insert(2, { 0, 0.20f });
 
     /// branch 1
-    db.put(1, 1, 0.11f);
-    db.put(2, 1, 0.21f);
-    db.put(3, 1, 0.31f);
+    db.insert(1, { 1, 0.11f });
+    db.insert(2, { 1, 0.21f });
+    db.insert(3, { 1, 0.31f });
 
     /// branch 2
-    db.put(2, 2, 0.22f);
-    db.put(3, 2, 0.32f);
-    db.put(4, 2, 0.42f);
+    db.insert(2, { 2, 0.22f });
+    db.insert(3, { 2, 0.32f });
+    db.insert(4, { 2, 0.42f });
 
     return db;
 }
@@ -45,5 +50,6 @@ int main()
 
     const auto db = core::load(filename);
     std::cout << "K-mer size: " << db.kmer_size() << std::endl;
+    std::cout << "Omega: " << std::setprecision(2) << std::fixed << db.omega() << std::endl;
     std::cout << db;
 }

@@ -33,9 +33,9 @@ auto create_test_map()
 }
 
 template<typename MapType>
-core::phylo_kmer_db create_db_from_map(const MapType& values, size_t kmer_size)
+core::phylo_kmer_db create_db_from_map(const MapType& values, size_t kmer_size, core::phylo_kmer::score_type omega)
 {
-    core::phylo_kmer_db db { kmer_size };
+    core::phylo_kmer_db db { kmer_size, omega, "" };
     for (const auto& [key, entries] : values)
     {
         for (const auto& [branch, score] : entries)
@@ -50,20 +50,21 @@ TEST_CASE("Database size", "[database]")
 {
     {
         const auto values = create_test_map();
-        const auto db = create_db_from_map(values, 3);
+        const auto db = create_db_from_map(values, 3, 1.0);
         REQUIRE(db.size() == values.size());
     }
 
     {
-        const core::phylo_kmer_db db { 3 };
+        const core::phylo_kmer_db db { 3, 1.0, "" };
         REQUIRE(db.size() == 0);
     }
 }
 
-TEST_CASE("K-mer size", "[database]")
+TEST_CASE("K-mer size and omega", "[database]")
 {
     const size_t kmer_size = 5;
-    const core::phylo_kmer_db db { kmer_size };
+    const core::phylo_kmer::score_type omega = 1.0;
+    const core::phylo_kmer_db db { kmer_size, omega, "" };
 
     REQUIRE(db.kmer_size() == kmer_size);
 }
@@ -87,7 +88,7 @@ TEST_CASE("Database search", "[database]")
 {
     const auto filename = fs::unique_path().string();
     const auto values = create_test_map();
-    const auto db = create_db_from_map(values, 3);
+    const auto db = create_db_from_map(values, 3, 1.0 );
     compare_db(values, db);
 }
 
@@ -97,9 +98,10 @@ TEST_CASE("(De-)serialization", "[database]")
     const auto filename = fs::unique_path().string();
     const auto values = create_test_map();
     const size_t kmer_size = 3;
+    const core::phylo_kmer::score_type omega = 1.0;
 
     {
-        const auto db = create_db_from_map(values, kmer_size);
+        const auto db = create_db_from_map(values, kmer_size, omega);
         core::save(db, filename);
     }
 
@@ -107,6 +109,7 @@ TEST_CASE("(De-)serialization", "[database]")
         const auto db = core::load(filename);
         REQUIRE(db.size() == values.size());
         REQUIRE(db.kmer_size() == kmer_size);
+        REQUIRE(db.omega() == omega);
     }
 }
 

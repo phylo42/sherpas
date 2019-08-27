@@ -14,9 +14,12 @@
 #include "groups.h"
 
 using namespace std;
+//everything needed to put the notion of groups at the heart of the output.
+//does not affect the way the main algorithm works.
 
 int max(std::vector<int> list)
 {
+	//max of a list
 	int res=-1;
 	for(int i=0;i<list.size(); i++)
 	{
@@ -30,6 +33,8 @@ int max(std::vector<int> list)
 
 std::string groupFromName(std::string leaf)
 {
+	//gets group from sequence name.
+	//WARNING: depends on how the sequence are named; current version works for names starting with group name followed with '.'
 	int i=0;
 	while(leaf[i] !='.' && i<leaf.length())
 	{
@@ -40,6 +45,8 @@ std::string groupFromName(std::string leaf)
 
 void getArcRef(core::phylo_tree& tree, std::vector<std::string>* ref)
 {
+	//maps each branch to the corresponding group in *ref
+	//needed when RAPPAS-db is used
 	if((*ref).size()>0)
 	{
 		cout << "Warning: vectors to be filled-up are nonempty" << endl;
@@ -71,6 +78,9 @@ void getArcRef(core::phylo_tree& tree, std::vector<std::string>* ref)
 
 void getDb2Ref(core::phylo_tree& tree, std::vector<std::string>* ref, std::vector<int>* group_id)
 {
+	//maps each branch to the corresponding group reference (=order of appearance in tree portorder exploration) in *group_id
+	//maps groups reference to groups name in *ref
+	//needed when max db is used
 	if((*ref).size()>0 ||(*group_id).size()>0 )
 	{
 		cout << "Warning: vectors to be filled-up are nonempty" << endl;
@@ -106,11 +116,10 @@ void getDb2Ref(core::phylo_tree& tree, std::vector<std::string>* ref, std::vecto
     	}
 }
 
-core::phylo_kmer_db GroupDb(const core::phylo_kmer_db& db, std::vector<int> groups)
+void GroupDb(const core::phylo_kmer_db& db, core::phylo_kmer_db *db2, std::vector<int> groups)
 {
-	size_t k=db.kmer_size();
-	core::phylo_kmer_db db2 {k, std::string{db.tree()} };
-	double thr=core::score_threshold(k);
+	//builds the alternative database from the RAPPAS one and the map from branches to group references
+	double thr=core::score_threshold(db.omega(), db.kmer_size());
 	int g=max(groups)+1;
 	//cout << g << endl;
 	std::vector<double> bg(g, thr);
@@ -128,12 +137,11 @@ core::phylo_kmer_db GroupDb(const core::phylo_kmer_db& db, std::vector<int> grou
 		{
 			if(bg[i] > thr)
 				{
-					db2.insert(key, {i, bg[i]});
+					(*db2).insert(key, {i, bg[i]});
 					bg[i]=thr;
 				}
 		}
 	}
-	return db2;
 }
 
 

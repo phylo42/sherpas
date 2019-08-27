@@ -40,7 +40,7 @@ namespace core
     bool operator==(const phylo_kmer& lhs, const phylo_kmer& rhs) noexcept;
 
     /// Returns a minumum score
-    phylo_kmer::score_type score_threshold(size_t kmer_size);
+    phylo_kmer::score_type score_threshold(phylo_kmer::score_type omega, size_t kmer_size);
 
     /// \brief Returns a code of input k-mer.
     /// \details Assumes that the size of input sequence equals k

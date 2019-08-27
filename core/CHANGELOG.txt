@@ -1,3 +1,9 @@
+v0.1.4
+- Added phylo_kmer_db::omega (score threshold parameter)
+- Updated serialization
+- Updated examples
+- Updated tests
+
 v0.1.3
 - seq_traits<dna>::key_type now is uint32_t
 - phylo_kmer_db now does not check the values pass to insert in the db. The old put() method replaced by insert()

@@ -23,7 +23,7 @@ void getArcRef(core::phylo_tree& tree, std::vector<std::string>* ref);
 
 void getDb2Ref(core::phylo_tree& tree, std::vector<std::string>* ref, std::vector<int>* group_id);
 
-core::phylo_kmer_db GroupDb(const core::phylo_kmer_db& db, std::vector<int> groups);
+void GroupDb(const core::phylo_kmer_db& db, core::phylo_kmer_db *db2, std::vector<int> groups);
 
 
 #endif /* GROUPS_H_ */

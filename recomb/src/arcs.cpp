@@ -13,6 +13,7 @@
 #include "arcs.h"
 
 using namespace std;
+//basic operation to record at each step of the main algorithm, key information on arcs.
 
 Arc::Arc(int a, double p)
 {

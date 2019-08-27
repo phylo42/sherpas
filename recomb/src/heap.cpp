@@ -13,6 +13,7 @@
 #include "heap.h"
 
 using namespace std;
+//basic operation to maintain the result as a heap at each step of the main algorithm, and to extract at any time a "top arcs" from the heap.
 
 Htree::Htree(std::vector<Arc*> res)
 {

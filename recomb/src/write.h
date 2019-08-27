@@ -13,29 +13,24 @@
 #include <string>
 #include "query.h"
 
-int findArc(int a, std::string t);
-
-double lengthArc(int pos, std::string t);
-
-std::string subtree(int pos, std::string t);
-
-double distNode(int pos, std::string t);
-
-double sumPaths(std::string t);
-
-int nbLeaves(std::string t);
-
-double lengthPendant(int pos, std::string t);
 
 void resInit(std::vector<Arc*> *res);
 
 void windInit(std::vector<std::vector<Arc*>> *wind);
 
-//void jplace(std::vector<std::string> q, std::string t, std::vector<std::vector<Kmer*>> list, std::vector<Arc>* branches, std::vector<std::string> infos, std::vector<Arc*> *res);
-
 void SciPlot(int n, std::string_view query, std::vector<std::string> ref, std::vector<Arc> branches, std::vector<std::vector<Arc*>> res, int shift);
 
 void Csv(int n, std::string query, std::vector<std::string> ref, std::vector<std::vector<Arc*>> res, int shift);
+
+int stars(std::string gr);
+
+std::string color(std::string gr);
+
+std::string div(std::string bp);
+
+void tikzLine(std::string rec, int y);
+
+void tikzDoc(std::string real, std::string resA, std::string resB);
 
 
 #endif /* WRITE_H_ */
