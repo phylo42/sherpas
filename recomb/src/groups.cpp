@@ -36,11 +36,17 @@ std::string groupFromName(std::string leaf)
 	//gets group from sequence name.
 	//WARNING: depends on how the sequence are named; current version works for names starting with group name followed with '.'
 	int i=0;
+	std::string res="";
 	while(leaf[i] !='.' && i<leaf.length())
 	{
 		i++;
 	}
-	return leaf.substr(0,i);
+	res=leaf.substr(0,i);
+	if(res[0]=='A')
+	{
+		res="A";
+	}
+	return res;
 }
 
 void getArcRef(core::phylo_tree& tree, std::vector<std::string>* ref)
@@ -112,7 +118,7 @@ void getDb2Ref(core::phylo_tree& tree, std::vector<std::string>* ref, std::vecto
 			}
 		}
 		(*group_id).push_back(l);
-		//cout << i << ": " << (*group_id)[i] << endl;
+		cout << i << ": " << (*ref)[(*group_id)[i]] << endl;
     	}
 }
 
@@ -144,5 +150,37 @@ void GroupDb(const core::phylo_kmer_db& db, core::phylo_kmer_db *db2, std::vecto
 	}
 }
 
+void rmTop(const core::phylo_kmer_db& db, core::phylo_kmer_db *db2, std::vector<std::string>* ref)
+{
+	//shrinks a database by removing scores associated to top-branches
+	double thr=core::score_threshold(db.omega(), db.kmer_size());
+	for(const auto& [key, entries] : db)
+	{
+		//cout << key << endl;
+		for (const auto& [branch, score] : entries)
+		{
+			if((*ref)[branch][1] !='*' && (*ref)[branch][2] !='*')
+			{
+				(*db2).insert(key, {branch, score});
+			}
+		}
+	}
+}
 
-
+void onlyRoot(const core::phylo_kmer_db& db, core::phylo_kmer_db *db2, std::vector<std::string>* ref)
+{
+	//shrinks a database by keeping only the score of the root of each group
+	double thr=core::score_threshold(db.omega(), db.kmer_size());
+	for(const auto& [key, entries] : db)
+	{
+		//cout << key << endl;
+		for (const auto& [branch, score] : entries)
+		{
+			if((*ref)[branch+1] != (*ref)[branch] && (*ref)[branch][1] !='*' && (*ref)[branch][2] !='*')
+			//if((*ref)[branch+1] != (*ref)[branch] || branch+1 == (*ref).size())
+			{
+				(*db2).insert(key, {branch, score});
+			}
+		}
+	}
+}

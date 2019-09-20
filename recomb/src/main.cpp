@@ -42,13 +42,14 @@ int main(int argc, char** argv) {
 	core::phylo_kmer_db db_rap = core::load(std::string{ argv[1]});
 	size_t k=db_rap.kmer_size();
 	core::phylo_kmer_db db_max {k, db_rap.omega(), std::string{db_rap.tree()} };
+	core::phylo_kmer_db db_small {k, db_rap.omega(), std::string{db_rap.tree()} };
 	core::phylo_tree tree = rappas::io::parse_newick(db_rap.tree());
-    	std::vector<rappas::io::fasta> sequences = rappas::io::read_fasta(std::string{ argv[2]});
+	std::vector<rappas::io::fasta> sequences = rappas::io::read_fasta(std::string{ argv[2]});
 	int s=sequences.size();
 	int tree_size=tree.get_node_count();
 	int ws=500;
 	int top=5;
-	char dbtype='B';
+	char dbtype='A';
 	//cout << "Window size" << endl;
 	//cin >> ws;
 	//cout << "Scores to record" << endl;
@@ -75,6 +76,9 @@ int main(int argc, char** argv) {
 		getDb2Ref(tree, &ref, &group_id);
 		GroupDb(db_rap, db, group_id);
 	}
+	//onlyRoot(*db, &db_small, &ref);
+	rmTop(*db, &db_small, &ref);
+	db=&db_small;
 	cout << "db and infos loaded in " << float(clock()-t)/CLOCKS_PER_SEC<< " sec." <<endl;
 	t=clock();
 	for(int i=0; i<s; i++)
@@ -90,23 +94,28 @@ int main(int argc, char** argv) {
 		H.Hempty();
 		cout << endl;*/
 		//t=clock();
-		slidingWindow(codes, ws, top, *db, &branches, &windows);
+		//slidingWindow(codes, ws, top, *db, &branches, &windows);
 		//printChange(windows, shift, ref);
 		//cout << "windows time " << float(clock()-t)/CLOCKS_PER_SEC<< " sec." <<endl;
-		//SciPlot(i+1,(sequences[i].header()), ref_arc, branches, windows, shift);
 		//Csv(i+1,(sequences[i].header()).data(), ref, windows, shift);
 		clearBranches(&branches);
 		windInit(&windows);
 		//cout << "-------" << endl;
 	}
 	cout << "overall time " << float(clock()-t)/CLOCKS_PER_SEC<< " sec." <<endl;
-	/*std::vector<rappas::io::fasta> test= rappas::io::read_fasta("/home/guillaume/Documents/LIRMM/Samples/HIV/all/ALL_gapfree.fasta");
+	/*std::vector<rappas::io::fasta> test= rappas::io::read_fasta("/home/guillaume/Documents/LIRMM/Samples/HIV/autumn-toyset/pol/HIV1_ALL_2017_pol_DNA.fasta");
+	//std::vector<rappas::io::fasta> comp= rappas::io::read_fasta("/home/guillaume/Documents/LIRMM/Samples/HIV/compendium/compendium-norec-align.fasta");
 	std::vector<rappas::io::fasta> nq;
 	std::vector<std::string> summary (0);
 	random_q(&test, &nq, 25, &summary, 2, 2);
-	writeFasta(&nq,"/home/guillaume/Documents/LIRMM/Samples/HIV/compendium/random-recomb.fasta");
+	std::vector<rappas::io::fasta> nq_gf=gapRm(&nq);
+	writeFasta(&nq_gf,"/home/guillaume/Documents/LIRMM/Samples/HIV/compendium/random-recomb.fasta");
 	writeInfo(&summary, "/home/guillaume/Documents/LIRMM/Samples/HIV/compendium/infos-random.txt");*/
-	tikzDoc(".", "/home/guillaume/Documents/LIRMM/Samples/jpHMM-test-HIV/dataset_1000_1000/res_A-k10.txt", "/home/guillaume/Documents/LIRMM/Samples/jpHMM-test-HIV/dataset_1000_1000/res_B-k10.txt");
+	//tikzDoc("/home/guillaume/Documents/LIRMM/Samples/HIV/autumn-toyset/pol/infos-random.txt", "/home/guillaume/Documents/LIRMM/Samples/HIV/autumn-toyset/pol/resA-k10-notop.txt", "/home/guillaume/Documents/LIRMM/Samples/HIV/autumn-toyset/pol/res-jpHMM.txt");
+	//compRes("/home/guillaume/Documents/LIRMM/Samples/HIV/autumn-toyset/pol/infos-random.txt", "/home/guillaume/Documents/LIRMM/Samples/HIV/autumn-toyset/pol/res-jpHMM.txt");
+	compMosaic("/home/guillaume/Documents/LIRMM/Samples/HIV/autumn-toyset/pol/infos-random.txt", "/home/guillaume/Documents/LIRMM/Samples/HIV/autumn-toyset/pol/res-scueal.txt");
+	//codes=encode_string_views("AGGTGGGCCTTGA", 8);
+	//cout << codes.size() << endl;
 	cout << "The End" << endl;
 	return 0;
 }

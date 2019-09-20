@@ -19,6 +19,8 @@ int nucl(char c);
 
 void incr(std::vector<int> *list, int a);
 
+std::string getAccess(std::string leaf);
+
 void writeFasta(std::vector<rappas::io::fasta> *sequences, std::string res);
 
 std::vector<rappas::io::fasta> gapRm(std::vector<rappas::io::fasta> *sequences);
@@ -34,6 +36,12 @@ void new_q(std::vector<rappas::io::fasta> *sequences, std::vector<rappas::io::fa
 std::string record(std::vector<rappas::io::fasta> *sequences, std::vector<int> bp, std::vector<int> seq);
 
 void random_q(std::vector<rappas::io::fasta> *sequences, std::vector<rappas::io::fasta> *nq, int n, std::vector<std::string> *summary, int b_max, int p_max);
+
+std::vector<std::vector<std::string>> readRes(std::string res);
+
+void compRes(std::string res1, std::string res2);
+
+void compMosaic(std::string res1, std::string res2);
 
 
 #endif /* INPUT_H_ */

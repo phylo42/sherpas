@@ -48,6 +48,21 @@ void incr(std::vector<int> *list, int a)
 	}
 }
 
+std::string getAccess(std::string leaf)
+{
+	//isolates access number from sequence name.
+	int s=leaf.length();
+	int dot=-1;
+	for(int i=0; i<s; i++)
+	{
+		if(leaf[i]=='.')
+		{
+			dot=i;
+		}
+	}
+	return leaf.substr(dot+1);
+}
+
 void writeFasta(std::vector<rappas::io::fasta> *sequences, std::string res)
 {
 	//writes a list of sequences in a .fasta file.
@@ -56,7 +71,7 @@ void writeFasta(std::vector<rappas::io::fasta> *sequences, std::string res)
 	ofstream write(res);
 	for(int i=0; i<s; i++)
 	{
-		write << ">" << ((*sequences)[i].header()).substr(0,10) << endl;
+		write << ">" << ((*sequences)[i].header())/*.substr(0,10)*/ << endl;
 		write << (*sequences)[i].sequence();
 		if(i<s-1)
 		{
@@ -115,7 +130,7 @@ void writeInfo(std::vector<string> *summary, std::string res)
 	ofstream write(res);
 	for(int i=0; i<s; i++)
 	{
-		write << "> query_" << i+1 << endl;
+		write << ">query_" << i+1 << endl;
 		write << (*summary)[i];
 		if(i<s-1)
 		{
@@ -202,8 +217,8 @@ void new_q(std::vector<rappas::io::fasta> *sequences, std::vector<rappas::io::fa
 					}
 				}
 				prev=(*bp)[i];
-				(*bp)[i]=(*bp)[i]-diff;
-				diff=0;
+				(*bp)[i]=(*bp)[i]-diff+1;
+				//diff=0;
 
 			}
 			else
@@ -270,6 +285,7 @@ void random_q(std::vector<rappas::io::fasta> *sequences, std::vector<rappas::io:
 	int len=0;
 	int g=-1;
 	int g_prev=-1;
+	int beg=0;
 	std::vector<int> groups=splitGroups(sequences);
 	for(int i=0; i<n; i++)
 	{
@@ -277,9 +293,14 @@ void random_q(std::vector<rappas::io::fasta> *sequences, std::vector<rappas::io:
 		seq.push_back(groups[g]+(rand() %(groups[g+1]-groups[g])));
 		//seq.push_back(rand() %s);
 		len=(((*sequences)[seq[0]]).sequence()).length();
+		beg=0;
+		while(! nucl((((*sequences)[seq[0]]).sequence())[beg]))
+		{
+			beg++;
+		}
 		for(int j=0; j<b_max; j++)
 		{
-			incr(&bp, rand() %len);
+			incr(&bp, beg+ rand() %(len+1-beg));
 			if(j<p_max-1)
 			{
 				g_prev=g;
@@ -309,4 +330,184 @@ void random_q(std::vector<rappas::io::fasta> *sequences, std::vector<rappas::io:
 		seq.clear();
 	}
 }
+
+std::vector<std::vector<std::string>> readRes(std::string res)
+{
+	std::vector<std::vector<std::string>> read(0);
+	std::string tmp="";
+	std::vector<std::string> tab(0);
+	ifstream data(res);
+	if(data)
+	{
+		std::string line="";
+		while(getline(data,line))
+		{
+			if(line[0] !='>')
+			{
+				for(int i=0; i<line.length(); i++)
+				{
+					if(line[i] !=',')
+					{
+						tmp+=line[i];				
+					}
+					else
+					{
+						tab.push_back(tmp);
+						tmp="";
+					}
+				}
+				tab.push_back(tmp);
+				tmp="";
+				if(tab.size() %2 == 0)
+				{
+					tab.insert(tab.begin(), "0");
+				}
+				read.push_back(tab);
+				tab.clear();
+			}
+		}
+		data.close();
+	}
+	else
+	{
+		cout << "No file there (or something like that)" << endl;
+	}
+	return read;
+}
+
+void compRes(std::string res1, std::string res2)
+{
+	std::vector<std::vector<std::string>> read1=readRes(res1);
+	std::vector<std::vector<std::string>> read2=readRes(res2);
+	int s=read2.size();
+	int val=0;
+	int t=-1;
+	double total=0;
+	double max=-1;
+	int k1=-1;
+	int k2=-1;
+	double comp=-1;
+	for(int i=0; i<s; i++)
+	{
+		t=(read2[i]).size();
+		//max=stoi(read2[i][t-1])-stoi(read2[i][0])+1;
+		max=0;
+		k1=0;
+		k2=0;
+		comp=0;
+		for(int j=stoi(read2[i][0]); j<stoi(read2[i][t-1])+1; j++)
+		{
+			if(j>stoi(read1[i][k1+2]))
+			{
+				k1+=2;
+			}
+			if(j>stoi(read2[i][k2+2]))
+			{
+				k2+=2;
+			}
+			//if(read2[i][k2+1] !="N/A")
+			{
+				max++;
+				if(read1[i][k1+1]==read2[i][k2+1])
+				{
+					comp++;
+				}
+			}
+		}
+		//if(comp*100/max<98)
+		{
+			cout << i+1 << ": " << comp*100/max << endl;
+		}
+		if(max!=0)
+		{
+			val++;
+			total+=comp*100/max;
+		}
+	}
+	cout << "------------" << endl;
+	cout << total/val << endl;
+}
+
+void compMosaic(std::string res1, std::string res2)
+{
+	std::vector<std::vector<std::string>> read1=readRes(res1);
+	std::vector<std::vector<std::string>> read2=readRes(res2);
+	int r=0;
+	int s=0;
+	int i=0;
+	int j=0;
+	double check=0;
+	for(int k=0; k<read1.size(); k++)
+	{
+		r=(read1[k]).size();
+		s=(read2[k]).size();
+		i=1;
+		j=1;
+		check=0;
+		if(r==s)
+		{
+			while(check==0 && i<s)
+			{
+				if(read1[k][i] !=read2[k][i])
+				{
+					check=nan("");
+				}
+				i+=2;
+			}
+		}
+		if(r < s)
+		{
+			while(j<s && check > -1)
+			{
+				if(read1[k][i] == read2[k][j])
+				{
+					i+=2;
+				}
+				else if(i==1 || read1[k][i-2] != read2[k][j])
+				{
+					check++;
+				}
+				j+=2;
+				if(j==s && i<r)
+				{
+					check=nan("");
+				}
+			}
+		}
+		if(s < r)
+		{
+			while(i<r && check < 1)
+			{
+				if(read1[k][i] == read2[k][j])
+				{
+					j+=2;
+				}
+				else if(j==1 || read1[k][i] != read2[k][j-2])
+				{
+					check--;
+				}
+				i+=2;
+				if(i==r && j<s)
+				{
+					check=nan("");
+				}
+			}
+		}
+		if(check ==0)
+		{
+			int m=2;
+			for(int l=2; l<r-1; l+=2)
+			{
+				while(read2[k][m-1]==read2[k][m+1])
+				{
+					m+=2;
+				}
+				cout << stoi(read2[k][m])-stoi(read1[k][l]) << ",";
+				m+=2;
+			}
+		}
+	}
+	cout << endl;
+}
+
 

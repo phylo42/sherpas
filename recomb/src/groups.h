@@ -25,5 +25,8 @@ void getDb2Ref(core::phylo_tree& tree, std::vector<std::string>* ref, std::vecto
 
 void GroupDb(const core::phylo_kmer_db& db, core::phylo_kmer_db *db2, std::vector<int> groups);
 
+void rmTop(const core::phylo_kmer_db& db, core::phylo_kmer_db *db2, std::vector<std::string>* ref);
+
+void onlyRoot(const core::phylo_kmer_db& db, core::phylo_kmer_db *db2, std::vector<std::string>* ref);
 
 #endif /* GROUPS_H_ */

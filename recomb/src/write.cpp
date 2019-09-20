@@ -210,10 +210,11 @@ void tikzLine(std::string rec, int y)
 void tikzDoc(std::string ref_R, std::string ref_A, std::string ref_B)
 {
 	std::string line="";
+	std::vector<std::string> nm (0);
 	std::vector<std::string> real (0);
 	std::vector<std::string> resA (0);
 	std::vector<std::string> resB (0);
-	/*ifstream dataR(ref_R);
+	ifstream dataR(ref_R);
 	if(dataR)
 	{
 		std::string prefix="0,";
@@ -226,9 +227,17 @@ void tikzDoc(std::string ref_R, std::string ref_A, std::string ref_B)
 				real.push_back(line);
 				cout << endl;
 			}
+			else
+			{
+				if(line[6]=='_')
+				{
+					line[6]=' ';
+				}
+				nm.push_back(line);
+			}
 		}
 		dataR.close();
-	}*/
+	}
 	ifstream dataA(ref_A);
 	if(dataA)
 	{
@@ -257,17 +266,17 @@ void tikzDoc(std::string ref_R, std::string ref_A, std::string ref_B)
 		}
 		dataB.close();
 	}
-	if(/*real.size()>0 &&*/ resA.size()>0 && resB.size() > 0)
+	if(real.size()>0 && resA.size()>0 && resB.size() > 0)
 	{
 		for(int i=0; i<resA.size(); i++)
 		{
 			cout << "\\begin{tikzpicture}" << endl;
 			cout << "\\draw (0,2.5) node{};" << endl;
-			cout << "\\draw(0,1.5) node{>query " << i+1 <<"};" << endl;
+			cout << "\\draw(0,1.5) node{" << nm[i] <<"};" << endl;
 			cout << "\\draw(-0.5,0.5) node{R};" << endl;
-			cout << "\\draw(-0.5,-1.5) node{A};" << endl;
-			cout << "\\draw(-0.5,-3.5) node{B};" << endl;
-			//tikzLine(real[i],0);
+			cout << "\\draw(-0.5,-1.5) node{1.};" << endl;
+			cout << "\\draw(-0.5,-3.5) node{2.};" << endl;
+			tikzLine(real[i],0);
 			tikzLine(resA[i],-2);
 			tikzLine(resB[i],-4);
 			cout << "\\end{tikzpicture}" << endl << endl;

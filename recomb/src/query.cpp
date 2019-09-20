@@ -68,7 +68,7 @@ void readQuery(std::vector<core::phylo_kmer_db::key_type> codes, const core::phy
     		}
 		else
 		{
-			cout << "Nope " << codes[i] << endl;
+			//cout << "Nope " << codes[i] << endl;
 		}
     	}
 	int s=(res).size();
@@ -190,7 +190,7 @@ void slidingWindow(std::vector<core::phylo_kmer_db::key_type> codes, int sw, int
     			}
 			else
 			{
-				cout << "Nope " << ka << endl;
+				//cout << "Nope " << ka << endl;
 			}
 			if (auto entries = db.search(kr) ; entries)
     			{
@@ -209,7 +209,7 @@ void slidingWindow(std::vector<core::phylo_kmer_db::key_type> codes, int sw, int
     			}
 			else
 			{
-				cout << "Nope " << kr << endl;
+				//cout << "Nope " << kr << endl;
 			}
 			H.getTop(m);
 			s=H.size();
