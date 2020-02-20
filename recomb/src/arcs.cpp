@@ -69,7 +69,6 @@ void Arc::printPlace(std::vector<std::string> ref)
 	{
 		cout << m_place << " ";
 	}
-	//cout << endl;
 }
 
 double Arc::getScore()

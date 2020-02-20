@@ -14,10 +14,6 @@
 #include "query.h"
 
 
-void resInit(std::vector<Arc*> *res);
-
-void windInit(std::vector<std::vector<Arc*>> *wind);
-
 void SciPlot(int n, std::string_view query, std::vector<std::string> ref, std::vector<Arc> branches, std::vector<std::vector<Arc*>> res, int shift);
 
 void Csv(int n, std::string query, std::vector<std::string> ref, std::vector<std::vector<Arc*>> res, int shift);
@@ -28,9 +24,11 @@ std::string color(std::string gr);
 
 std::string div(std::string bp);
 
-void tikzLine(std::string rec, int y);
+void tikzLine(std::string rec, double y, std::vector<std::string> *gr);
 
 void tikzDoc(std::string real, std::string resA, std::string resB);
+
+void tikzLegend(std::vector<std::string> gr);
 
 
 #endif /* WRITE_H_ */

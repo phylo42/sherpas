@@ -2,7 +2,7 @@
  * heap.cpp
  *
  *  Created on: 19 févr. 2019
- *      Author: guillaume
+ *      Author: scholz
  */
 
 #include<iostream>
@@ -17,7 +17,6 @@ using namespace std;
 
 Htree::Htree(std::vector<Arc*> res)
 {
-	//std::vector<Arc*> res(0);
 	m_res=res;
 }
 

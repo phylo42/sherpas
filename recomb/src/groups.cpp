@@ -17,54 +17,74 @@ using namespace std;
 //everything needed to put the notion of groups at the heart of the output.
 //does not affect the way the main algorithm works.
 
-int max(std::vector<int> list)
+std::vector<std::string> readGrFile(std::string csv)
 {
-	//max of a list
-	int res=-1;
-	for(int i=0;i<list.size(); i++)
+	//reads the .csv file with groups information
+	std::vector<std::string> tab (0);
+	ifstream data(csv);
+	if(data)
 	{
-		if(list[i]>res)
+		std::string line="";
+		int check=0;
+		int p=0;
+		while(getline(data,line))
 		{
-			res=list[i];
+			p=0;
+			while(line[p] !=',')
+			{
+					p++;
+			}
+			tab.push_back(line.substr(0,p));
+			tab.push_back(line.substr(p+1));
 		}
+		data.close();
 	}
-	return res;
+	else
+	{
+		cout << "No file found at " << csv << endl;
+	}
+	return tab;
 }
 
-std::string groupFromName(std::string leaf)
+std::string groupFromTab(std::string nm, std::vector<std::string> tab)
 {
-	//gets group from sequence name.
-	//WARNING: depends on how the sequence are named; current version works for names starting with group name followed with '.'
-	int i=0;
+	//uses the table read from the .csv file to get the group of reference sequence.
 	std::string res="";
-	while(leaf[i] !='.' && i<leaf.length())
+	int j=0;
+	int check=0;
+	while(j<tab.size() && check==0)
 	{
-		i++;
+		if(tab[j]==nm)
+		{
+			check=1;
+			res=tab[j+1];
+		}
+		j+=2;
 	}
-	res=leaf.substr(0,i);
-	if(res[0]=='A')
+	if(check==0)
 	{
-		res="A";
+		cout << "Leaf \"" << nm << "\" not found in the reference tree." << endl;
+		res="N/A";
 	}
 	return res;
 }
 
-void getArcRef(core::phylo_tree& tree, std::vector<std::string>* ref)
+void getArcRef(core::phylo_tree& tree, std::vector<std::string>* ref, std::string gfile)
 {
 	//maps each branch to the corresponding group in *ref
-	//needed when RAPPAS-db is used
 	if((*ref).size()>0)
 	{
 		cout << "Warning: vectors to be filled-up are nonempty" << endl;
 	}
 	int i=-1;
 	std::string group="";
+	std::vector<std::string> tab=readGrFile(gfile);
 	for (const auto& node : tree)
    	{
 		i=node.get_postorder_id();
 		if((node.get_children()).size()==0)
 		{
-			group=groupFromName(node.get_label());
+			group=groupFromTab(node.get_label(), tab);
 		}
 		else
 		{
@@ -78,93 +98,54 @@ void getArcRef(core::phylo_tree& tree, std::vector<std::string>* ref)
 			}
 		}
 		(*ref).push_back(group);
-		cout << i << ": " << (*ref)[i] << endl;
     	}
 }
 
-void getDb2Ref(core::phylo_tree& tree, std::vector<std::string>* ref, std::vector<int>* group_id)
+std::vector<std::string> listGroups(std::vector<std::string> ref)
 {
-	//maps each branch to the corresponding group reference (=order of appearance in tree portorder exploration) in *group_id
-	//maps groups reference to groups name in *ref
-	//needed when max db is used
-	if((*ref).size()>0 ||(*group_id).size()>0 )
+	std::vector<std::string> res (0);
+	int s=0;
+	int j=0;
+	for(int i=0; i<ref.size(); i++)
 	{
-		cout << "Warning: vectors to be filled-up are nonempty" << endl;
-	}
-	int i=-1;
-	std::string group="";
-	int l=-1;
-	std::string gtemp="";
-	for (const auto& node : tree)
-   	{
-		i=node.get_postorder_id();
-        	if((node.get_children()).size()==0)
+		if(ref[i][1] != '*' && ref[i][2] != '*' && ref[i][3] != '*')
 		{
-			if(groupFromName(node.get_label()) != gtemp)
+			j=0;
+			while(j<s)
 			{
-				l++;
-				gtemp=groupFromName(node.get_label());
-				(*ref).push_back(gtemp);
-				//cout << l << ": " << (*ref)[l] << endl;
-			}
-		}
-		else
-		{
-			if((*group_id)[(*node.get_children()[0]).get_postorder_id()] != (*group_id)[(*node.get_children()[1]).get_postorder_id()])
-			{
-				l++;
-				(*ref).push_back((*ref)[(*group_id)[(*node.get_children()[0]).get_postorder_id()]]+ "*" + (*ref)[(*group_id)[(*node.get_children()[1]).get_postorder_id()]]);
-				//cout << l << ": " << (*ref)[l] << endl;
-			}
-		}
-		(*group_id).push_back(l);
-		cout << i << ": " << (*ref)[(*group_id)[i]] << endl;
-    	}
-}
-
-void GroupDb(const core::phylo_kmer_db& db, core::phylo_kmer_db *db2, std::vector<int> groups)
-{
-	//builds the alternative database from the RAPPAS one and the map from branches to group references
-	double thr=core::score_threshold(db.omega(), db.kmer_size());
-	int g=max(groups)+1;
-	//cout << g << endl;
-	std::vector<double> bg(g, thr);
-	for(const auto& [key, entries] : db)
-	{
-		//cout << key << endl;
-		for (const auto& [branch, score] : entries)
-		{
-			if(score>bg[groups[branch]])
-			{
-				bg[groups[branch]]=score;
-			}
-		}
-		for(int i=0; i<g; i++)
-		{
-			if(bg[i] > thr)
+				if(res[j] != ref[i])
 				{
-					(*db2).insert(key, {i, bg[i]});
-					bg[i]=thr;
+					j++;
 				}
-		}
-	}
-}
-
-void rmTop(const core::phylo_kmer_db& db, core::phylo_kmer_db *db2, std::vector<std::string>* ref)
-{
-	//shrinks a database by removing scores associated to top-branches
-	double thr=core::score_threshold(db.omega(), db.kmer_size());
-	for(const auto& [key, entries] : db)
-	{
-		//cout << key << endl;
-		for (const auto& [branch, score] : entries)
-		{
-			if((*ref)[branch][1] !='*' && (*ref)[branch][2] !='*')
+				else
+				{
+					j=s+1;
+				}
+			}
+			if(j==s)
 			{
-				(*db2).insert(key, {branch, score});
+				res.push_back(ref[i]);
+				s++;
 			}
 		}
 	}
+	return res;
+}
+
+int isTop(std::string gr)
+{
+	//check from its label if the branch of a tree is a "top branch" (ie not in a clade).
+	int res=0;
+	int i=0;
+	while(i<gr.length() && res==0)
+	{
+		if(gr[i]=='*')
+		{
+			res=1;
+		}
+		i++;
+	}
+	return res;
 }
 
 void onlyRoot(const core::phylo_kmer_db& db, core::phylo_kmer_db *db2, std::vector<std::string>* ref)
@@ -173,14 +154,13 @@ void onlyRoot(const core::phylo_kmer_db& db, core::phylo_kmer_db *db2, std::vect
 	double thr=core::score_threshold(db.omega(), db.kmer_size());
 	for(const auto& [key, entries] : db)
 	{
-		//cout << key << endl;
 		for (const auto& [branch, score] : entries)
 		{
-			if((*ref)[branch+1] != (*ref)[branch] && (*ref)[branch][1] !='*' && (*ref)[branch][2] !='*')
-			//if((*ref)[branch+1] != (*ref)[branch] || branch+1 == (*ref).size())
+			if((*ref)[branch+1] != (*ref)[branch] && !isTop((*ref)[branch]))
 			{
 				(*db2).insert(key, {branch, score});
 			}
 		}
 	}
 }
+

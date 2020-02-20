@@ -2,7 +2,7 @@
  * heap.h
  *
  *  Created on: 19 févr. 2019
- *      Author: guillaume
+ *      Author: scholz
  */
 
 #ifndef HEAP_H_
@@ -13,7 +13,7 @@
 #include <string>
 #include "arcs.h"
 
-//https://www.techiedelight.com/min-heap-max-heap-implementation-c/
+//thanks to https://www.techiedelight.com/min-heap-max-heap-implementation-c/
 
 class Htree
 {
@@ -33,7 +33,7 @@ public:
 	void pop(int i);
 	void heapDown(int i);
 	void heapUp(int i);
-	void getTop(int m); //pb: currently emptying H...
+	void getTop(int m);
 
 
 private:

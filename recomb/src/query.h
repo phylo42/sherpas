@@ -11,23 +11,29 @@
 #include<fstream>
 #include<vector>
 #include <string>
-#include "arcs.h"
 #include "heap.h"
 #include <core/phylo_kmer_db.h>
 #include <core/kmer_iterator.h>
+#include <utils/io/fasta.h>
 
-std::vector<core::phylo_kmer_db::key_type> encode_string_views(std::string_view long_read, const size_t kmer_size);
+int nucl(char c);
 
-void search(const core::phylo_kmer_db& db, core::phylo_kmer_db::key_type key);
+std::vector<rappas::io::fasta> gapRm(std::vector<rappas::io::fasta> *sequences);
 
-void readQuery(std::vector<core::phylo_kmer_db::key_type> codes, const core::phylo_kmer_db& db, std::vector<Arc>* branches, Htree *H);
+void make_circu(std::string res, std::string rep, int p);
 
-void printScore(std::vector<Arc*> result, std::vector<std::string> ref);
+void windInit(std::vector<std::vector<Arc*>> *wind);
 
-void printChange(std::vector<std::vector<Arc*>> result, int shift, std::vector<std::string> ref);
+std::vector<std::vector<core::phylo_kmer_db::key_type>> encode_ambiguous_string(std::string_view long_read, const size_t kmer_size);
 
-double lRatio(std::vector<Arc*> result, int i);
+std::vector<std::vector<core::phylo_kmer_db::key_type>> fixCcodes(std::vector<std::vector<core::phylo_kmer_db::key_type>> ccodes, std::string_view long_read, const size_t kmer_size);
 
-void slidingWindow(std::vector<core::phylo_kmer_db::key_type> codes, int sw, int m, const core::phylo_kmer_db& db, std::vector<Arc>* branches, std::vector<std::vector<Arc*>> *res);
+void readQuery(std::vector<std::vector<core::phylo_kmer_db::key_type>> codes, const core::phylo_kmer_db& db, std::vector<Arc>* branches, Htree *H);
+
+void addKmer(std::vector<core::phylo_kmer_db::key_type> keys, Htree* H, const core::phylo_kmer_db& db, std::vector<Arc>* branches, double thr, int sw, int k, int move);
+
+void rmKmer(std::vector<core::phylo_kmer_db::key_type> keys, Htree* H, const core::phylo_kmer_db& db, std::vector<Arc>* branches, double thr, int move);
+
+void slidingVarWindow(std::vector<std::vector<core::phylo_kmer_db::key_type>> codes, int wi, int sw, int m, const core::phylo_kmer_db& db, std::vector<Arc>* branches, std::vector<std::vector<Arc*>> *res);
 
 #endif /* QUERY_H_ */

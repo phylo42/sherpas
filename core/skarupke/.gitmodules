@@ -1,3 +1,0 @@
-[submodule "flat_hash_map"]
-	path = include/flat_hash_map
-	url = git@github.com:skarupke/flat_hash_map.git

@@ -9,12 +9,10 @@ add_executable(
         src/heap.cpp
         src/query.h
         src/query.cpp
-        src/write.cpp
-        src/write.h
 	src/groups.cpp
         src/groups.h
-	src/input.cpp
-        src/input.h
+	src/output.cpp
+        src/output.h
 )
 
 find_package(Boost REQUIRED COMPONENTS program_options filesystem iostreams)
