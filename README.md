@@ -1,10 +1,12 @@
 # SHERPAS
 
 **Screening Historical Events of Recombination in a Phylogeny via Ancestral Sequences**
+
 A new, alignment-free genome recombination detection tool exploiting the idea of phylo-kmers (originally developed in  from RAPPAS, Linard et al. 2019) to accelerate the process by several orders of magnitude while keeping comparable accuracy. 
 
 __Reference:__
-__Scholz GE, Linard B, Rivals E, Pardi F. Rapid screening and detection of inter-(sub)type recombinants using phylo-k-mers. To be submitted to Bioinformatics (submitted)__
+
+__*Scholz GE, Linard B, Rivals E, Pardi F. Rapid screening and detection of inter-(sub)type recombinants using phylo-k-mers. To be submitted to Bioinformatics (submitted)*__
 
 → si vous le mettez sur biorxiv après soumission, mettre le DOI associé ?
 
@@ -35,7 +37,7 @@ In SHERPAS, the phylo-kmer database built by RAPPAS is used for the purpose of i
 
 # Usage
 
-##Compilation and execution
+## Compilation and execution
 
 **Compilation:**
 
