@@ -11,5 +11,5 @@ if(NOT HASH_MAP)
     set(HASH_MAP "USE_TSL_HOPSCOTCH_MAP")
 endif()
 
-add_subdirectory(core)
+add_subdirectory(lib/xpas)
 add_subdirectory(recomb)
