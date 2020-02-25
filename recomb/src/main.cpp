@@ -15,7 +15,7 @@
 #include "output.h"
 #include "query.h"
 //#include "write.h"
-//#include "input.h"
+#include "input.h"
 #include <utils/io/fasta.h>
 #include <core/serialization.h>
 #include <core/newick.h>

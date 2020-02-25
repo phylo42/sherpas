@@ -13,6 +13,8 @@ add_executable(
         src/groups.h
 	src/output.cpp
         src/output.h
+	src/input.cpp
+        src/input.h	
 )
 
 find_package(Boost REQUIRED COMPONENTS program_options filesystem iostreams)

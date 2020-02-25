@@ -18,6 +18,8 @@
 
 void incr(std::vector<int> *list, int a);
 
+std::string groupFromName(std::string leaf);
+
 int bpDist(std::vector<int> bp, int max);
 
 std::string getAccess(std::string leaf);
@@ -75,5 +77,9 @@ void readErr(std::string res, std::string rep);
 void sortErr(std::string res, std::string rep, std::vector<rappas::io::fasta>* queries);
 
 void infoReads(std::string clean, std::string err, std::string res, std::vector<rappas::io::fasta>* reads);
+
+std::string round(std::string val, int arr);
+
+void shrinkTable(std::string tab, std::string res, std::vector<std::string> kp, int arr, int col);
 
 #endif /* INPUT_H_ */

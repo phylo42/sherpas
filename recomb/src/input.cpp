@@ -36,6 +36,30 @@ void incr(std::vector<int> *list, int a)
 	}
 }
 
+std::string groupFromName(std::string leaf)
+{
+	//gets group from sequence name.
+	//WARNING: depends on how the sequence are named: version 1 works for names starting with group name followed with '.' (HIV); version 2 works for names ending with "_[gr_name]" (HBV).
+	//not needed for main algo (replaced by groupFromTab) but still needed in the simulating recombinants part (just because it is easier just to leave it here than to update that part).
+	int i=0;
+	std::string res="";
+	/*while(leaf[i] !='.' && i<leaf.length()) // beginning of version 1 (HIV)
+	{
+		i++;
+	}
+	res=leaf.substr(0,i);*/ //end of version 1 (HIV)
+	/*if(res[0]=='A' || (res[0]=='0' && res[1]=='1'))
+	{
+		res="A";
+	}*/
+	while(leaf[i] !='_') // beginning of version 2 (HBV)
+	{
+		i++;
+	}
+	res=leaf.substr(i+1); // end of version 2 (HBV)
+	return res;
+}
+
 int bpDist(std::vector<int> bp, int max)
 {
 	//computes the minimal distance between two breakpoints, and between breakpoints and extremities (0 and max).
@@ -1444,5 +1468,80 @@ void infoReads(std::string clean, std::string err, std::string res, std::vector<
 			}
 			i+=2;
 		}
+	}
+}
+
+std::string round(std::string val, int arr)
+{
+	std::string res="";
+	int j=0;
+	int i=0;
+	while(val[j] !='.' && j<val.length()-1)
+	{
+		res+=val[j];
+		j++;
+	}
+	while(i<arr+1 && j+i<val.length()-1)
+	{
+		res+=val[j+i];
+		i++;
+	}
+	res+=' ';
+	return res;
+}
+
+void shrinkTable(std::string tab, std::string res, std::vector<std::string> kp, int arr, int col)
+{
+	//don't ask...
+	ofstream write(res);
+	ifstream data(tab);
+	if(data)
+	{
+		std::string line="";
+		int check=0;
+		std::string tmp="";
+		std::vector<std::string> ltmp (0);
+		int j=0;
+		while(getline(data,line))
+		{
+			ltmp.clear();
+			if(j<46 || line[0]=='\\' || line.length()==0 || line[0]=='P')
+			{
+				write << line << endl;
+			}
+			else
+			{
+				for(int i=0; i<line.length(); i++)
+				{
+					if(line[i]!='&')
+					{
+						tmp+=line[i];
+					}
+					else
+					{
+						ltmp.push_back(tmp);
+						tmp="";
+					}
+				}
+				ltmp.push_back(tmp);
+				tmp="";
+				if(ltmp[0]==kp[check])
+				{
+					check++;
+					write << ltmp[0];
+					for(int k=1; k<col+1; k++)
+					{
+						write << "&" << round(ltmp[k], arr);
+					}
+					write << "\\\\" << endl;
+				}
+				//write << "line here" << endl;
+			}
+			j++;
+		}
+	}
+	else
+	{
+		cout << "No file there (or something like that)" << endl;
 	}
 }
