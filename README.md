@@ -41,7 +41,7 @@ In SHERPAS, the phylo-kmer database built by RAPPAS is used for the purpose of i
 Clone the repository with recursive option:
 
 ```shell
-git clone --recursive https://github.com/gllm-scholz/sherpas.git
+git clone --recursive https://github.com/phylo42/sherpas.git
 cd sherpas
 mkdir release-build
 cd release-build
