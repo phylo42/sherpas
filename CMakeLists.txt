@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(rappas-recomb)
+project(sherpas)
 
 # default build type Release
 if (NOT CMAKE_BUILD_TYPE)
@@ -12,4 +12,4 @@ if(NOT HASH_MAP)
 endif()
 
 add_subdirectory(lib/xpas)
-add_subdirectory(recomb)
+add_subdirectory(sherpas)
