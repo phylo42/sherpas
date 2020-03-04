@@ -200,22 +200,45 @@ void Htree::getTop(int m)
 	{
 		m=s;
 	}
-	for(int i=0;i<m; i++)
+	if(m>2)
 	{
-		temp.push_back(m_res[0]);
-		swap(0,m_res.size()-1);
-		m_res.pop_back();
-		heapDown(0);
-		(*(temp)[i]).updateCheck(i);
+		for(int i=0;i<m; i++)
+		{
+			temp.push_back(m_res[0]);
+			swap(0,m_res.size()-1);
+			m_res.pop_back();
+			heapDown(0);
+			(*(temp)[i]).updateCheck(i);
+		}
+		for(int i=m; i<s;i++)
+		{
+			temp.push_back(m_res[i-m]);
+			(*temp[i]).updateCheck(i);
+		}
+		m_res=temp;
 	}
-	for(int i=m; i<s;i++)
+	if(m==2 && (*m_res[1]).getScore()<(*m_res[2]).getScore())
 	{
-		temp.push_back(m_res[i-m]);
-		(*temp[i]).updateCheck(i);
+		swap(1,2);
+		heapDown(2);
 	}
-	m_res=temp;
 }
 
+double Htree::lRatio(int k)
+{
+	int s=m_res.size();
+	double q=0;
+	for(int j=0; j<s;j++)
+	{
+		q+=(pow(10,((*m_res[j]).getScore()-(*m_res[0]).getScore())/k))*((*m_res[j]).getScore() !=0);
+	}
+	return 1/q;
 
+}
 
+double Htree::dRatio(int k)
+{
+	return pow(10,((*m_res[0]).getScore()-(*m_res[1]).getScore())/k);
+
+}
 

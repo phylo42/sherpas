@@ -78,19 +78,7 @@ void printHead(std::string qfile, char dbtype, double theta, int ws, int cflag, 
 	(*writef) << "#" << endl << endl; 
 }
 
-double lRatio(std::vector<Arc*> result, int i, int k)
-{
-	//likelihood ratio
-	int s=result.size();
-	double q=0;
-	for(int j=0; j<s;j++)
-	{
-		q+=(pow(10,((*result[j]).getScore()-(*result[i]).getScore())/k))*((*result[j]).getScore() !=0);
-	}
-	return 1/q;
-}
-
-std::vector<std::string> printChange(std::vector<std::vector<Arc*>> result, int shift, std::vector<std::string> ref, double thr, int k, char m)
+std::vector<std::string> printChange(std::vector<std::vector<Arc*>> result, int shift, std::vector<std::string> ref, double thr, std::vector<double> rat, char m)
 {
 	//from a list of result vectors, the segments with breakpoints and values between (does not print anything, despite the name).
 	std::vector<std::string> res(0);
@@ -99,18 +87,9 @@ std::vector<std::string> printChange(std::vector<std::vector<Arc*>> result, int 
 	int aref=rs;
 	res.push_back("0");
 	ref.push_back("N/A");
-	double rat=0;
 	for(int i=0; i<s; i++)
 	{
-		if(m=='F')
-		{
-			rat=pow(10,((*result[i][0]).getScore()-(*result[i][1]).getScore())/k);
-		}
-		else
-		{
-			rat=lRatio(result[i],0,k);
-		}
-		if(ref[(*result[i][0]).getPlace()] != ref[(*result[i][1]).getPlace()] && (i==0 || aref<rs) && rat<thr)
+		if((ref[(*result[i][0]).getPlace()] != ref[(*result[i][1]).getPlace()] || m=='R') && (i==0 || aref<rs) && rat[i]<thr)
 		{
 			if(i>0)
 			{
@@ -119,7 +98,7 @@ std::vector<std::string> printChange(std::vector<std::vector<Arc*>> result, int 
 			aref=rs;
 			res.push_back("N/A");
 		}
-		else if(ref[(*result[i][0]).getPlace()] != ref[aref] && (ref[(*result[i][0]).getPlace()] == ref[(*result[i][1]).getPlace()] || rat>=thr))
+		else if((ref[(*result[i][0]).getPlace()] != ref[aref]) && ((ref[(*result[i][0]).getPlace()] == ref[(*result[i][1]).getPlace()] && m=='F') || rat[i]>=thr))
 		{
 			if(i>0)
 			{
@@ -140,66 +119,61 @@ std::vector<std::string> printChange(std::vector<std::vector<Arc*>> result, int 
 	return res;
 }
 
-void mergeNA(std::vector<std::vector<std::string>> read, std::string seq, int circ, int lin, int keep, std::ofstream* write)
+void mergeNA(std::vector<std::string> read, int circ, int lin, int keep, std::ofstream* write)
 {
 	//Remove "N/A" section when both adjacent sections are the same.
-	std::vector<string> nm= readNm(seq);
 	int l=0;
-	for(int i=0; i<read.size(); i++)
+	if(keep==0)
 	{
-		(*write) << nm[i] << endl;
-		if(keep==0)
+		l=3;
+		while(l<(read).size()-2)
 		{
-			l=3;
-			while(l<(read[i]).size()-2)
+			if(read[l]=="N/A" && read[l-2]==read[l+2])
 			{
-				if(read[i][l]=="N/A" && read[i][l-2]==read[i][l+2])
+				for(int rec=0; rec<4; rec++)
 				{
-					for(int rec=0; rec<4; rec++)
-					{
-						(read[i]).erase((read[i]).begin()+l-1);
-					}
-				}
-				else if(read[i][l]=="N/A" && read[i][l+2]=="N/A")
-				{
-					for(int rec=0; rec<2; rec++)
-					{
-						(read[i]).erase((read[i]).begin()+l);
-					}
-				}
-				else
-				{
-					l+=2;
+					(read).erase((read).begin()+l-1);
 				}
 			}
+			else if(read[l]=="N/A" && read[l+2]=="N/A")
+			{
+				for(int rec=0; rec<2; rec++)
+				{
+					(read).erase((read).begin()+l);
+				}
+			}
+			else
+			{
+				l+=2;
+			}
+		}
 			if(circ==1)
-			{
-				if(read[i][1]=="N/A" && read[i][(read[i]).size()-2]=="N/A" && read[i]	[3]==read[i][(read[i]).size()-4])
-				{
-					(read[i]).erase((read[i]).end()-2);
-					(read[i]).erase((read[i]).end()-2);
-					(read[i]).erase((read[i]).begin()+1);
-					(read[i]).erase((read[i]).begin()+1);
-				}
-			}
-		}
-		if(lin==1)
 		{
-			for(int j=0; j<(read[i]).size()-1; j++)
+			if(read[1]=="N/A" && read[(read).size()-2]=="N/A" && read[3]==read[(read).size()-4])
 			{
-				(*write) << read[i][j] << ",";
+				(read).erase((read).end()-2);
+				(read).erase((read).end()-2);
+				(read).erase((read).begin()+1);
+				(read).erase((read).begin()+1);
 			}
-			(*write) << (read[i]).back() << endl;
 		}
-		else
+	}
+	if(lin==1)
+	{
+		for(int j=0; j<(read).size()-1; j++)
 		{
-			(*write) << "1\t";
-			for(int j=1; j<(read[i]).size()-2; j+=2)
-			{
-				(*write) << stoi(read[i][j+1])-1 << "\t";
-				(*write) << read[i][j] << endl << read[i][j+1] << "\t";
-			}
-			(*write) << (read[i]).back()  << "\t" << read[i][(read[i]).size()-2] << endl << endl;
+			(*write) << read[j] << ",";
 		}
+		(*write) << (read).back() << endl;
+	}
+	else
+	{
+		(*write) << "1\t";
+		for(int j=1; j<(read).size()-2; j+=2)
+		{
+			(*write) << stoi(read[j+1])-1 << "\t";
+			(*write) << read[j] << endl << read[j+1] << "\t";
+		}
+		(*write) << (read).back()  << "\t" << read[(read).size()-2] << endl << endl;
 	}
 }

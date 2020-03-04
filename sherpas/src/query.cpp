@@ -322,7 +322,7 @@ void rmKmer(std::vector<core::phylo_kmer_db::key_type> keys, Htree* H, const cor
 }
 
 
-void slidingVarWindow(std::vector<std::vector<core::phylo_kmer_db::key_type>> codes, int wi, int sw, int m, const core::phylo_kmer_db& db, std::vector<Arc>* branches, std::vector<std::vector<Arc*>> *res)
+void slidingVarWindow(std::vector<std::vector<core::phylo_kmer_db::key_type>> codes, int wi, int sw, int m, const core::phylo_kmer_db& db, std::vector<Arc>* branches, std::vector<std::vector<Arc*>> *res, std::vector<double> *rat, char met)
 {
 	//the main algorithm.
 	//basically a sliding window except the window size increases (from wi to sw) at the beginning of the query and decreases (from sw to wi) at the end.
@@ -347,6 +347,14 @@ void slidingVarWindow(std::vector<std::vector<core::phylo_kmer_db::key_type>> co
 		std::vector<std::vector<core::phylo_kmer_db::key_type>> firstw(codes.begin(),codes.begin()+wi-1);
 		readQuery(firstw, db, branches, &H);
 		H.getTop(m);
+		if(met=='R')
+			{
+				(*rat).push_back(H.lRatio(k));
+			}
+			else
+			{
+				(*rat).push_back(H.dRatio(k));
+			}
 		int s=H.size();
 		for(int i=0; i<m; i++)
 		{
@@ -368,6 +376,14 @@ void slidingVarWindow(std::vector<std::vector<core::phylo_kmer_db::key_type>> co
 			addKmer(ka, &H, db, branches, thr, j+1, k, 0);
 			addKmer(kr, &H, db, branches, thr, j+1, k, 0);
 			H.getTop(m);
+			if(met=='R')
+			{
+				(*rat).push_back(H.lRatio(k));
+			}
+			else
+			{
+				(*rat).push_back(H.dRatio(k));
+			}
 			s=H.size();
 			for(int i=0; i<m; i++)
 			{
@@ -390,6 +406,14 @@ void slidingVarWindow(std::vector<std::vector<core::phylo_kmer_db::key_type>> co
 			addKmer(ka, &H, db, branches, thr, j+1, k, 1);
 			rmKmer(kr, &H, db, branches, thr, 1);
 			H.getTop(m);
+			if(met=='R')
+			{
+				(*rat).push_back(H.lRatio(k));
+			}
+			else
+			{
+				(*rat).push_back(H.dRatio(k));
+			}
 			s=H.size();
 			for(int i=0; i<m; i++)
 			{
@@ -412,6 +436,14 @@ void slidingVarWindow(std::vector<std::vector<core::phylo_kmer_db::key_type>> co
 			rmKmer(ka, &H, db, branches, thr, 0);
 			rmKmer(kr, &H, db, branches, thr, 0);
 			H.getTop(m);
+			if(met=='R')
+			{
+				(*rat).push_back(H.lRatio(k));
+			}
+			else
+			{
+				(*rat).push_back(H.dRatio(k));
+			}
 			s=H.size();
 			for(int i=0; i<m; i++)
 			{

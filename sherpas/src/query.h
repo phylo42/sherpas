@@ -34,6 +34,6 @@ void addKmer(std::vector<core::phylo_kmer_db::key_type> keys, Htree* H, const co
 
 void rmKmer(std::vector<core::phylo_kmer_db::key_type> keys, Htree* H, const core::phylo_kmer_db& db, std::vector<Arc>* branches, double thr, int move);
 
-void slidingVarWindow(std::vector<std::vector<core::phylo_kmer_db::key_type>> codes, int wi, int sw, int m, const core::phylo_kmer_db& db, std::vector<Arc>* branches, std::vector<std::vector<Arc*>> *res);
+void slidingVarWindow(std::vector<std::vector<core::phylo_kmer_db::key_type>> codes, int wi, int sw, int m, const core::phylo_kmer_db& db, std::vector<Arc>* branches, std::vector<std::vector<Arc*>> *res, std::vector<double> *rat, char met);
 
 #endif /* QUERY_H_ */

@@ -12,8 +12,8 @@
 #include <unordered_map>
 #include <time.h>
 #include <random>
-#include "output.h"
 #include "query.h"
+#include "output.h"
 #include <utils/io/fasta.h>
 #include <core/serialization.h>
 #include <core/newick.h>
@@ -173,7 +173,7 @@ int main(int argc, char** argv) {
 	int tree_size=tree.get_node_count();
 	core::phylo_kmer_db db_small {k, db_rap.omega(), std::string{db_rap.tree()} };
 	int wi=100;
-	int top=5;
+	int top=2;
 	int shift=(wi+k-1)/2;
 	std::string qfile=fileName(qadd);
 	if(cflag ==1)
@@ -193,6 +193,7 @@ int main(int argc, char** argv) {
 	Htree H(read);
 	std::vector<std::vector<Arc*>> windows(0);
 	std::vector<std::string> ref(0);
+	std::vector<double> rat(0);
 	std::vector<int> group_id(0);
 	core::phylo_kmer_db* db=&db_rap;
 	getArcRef(tree, &ref, gadd);
@@ -210,23 +211,23 @@ int main(int argc, char** argv) {
 	all.push_back("all");
 	cout << "db and infos loaded in " << float(clock()-t)/CLOCKS_PER_SEC<< " sec." <<endl;
 	t=clock();
-	std::vector<std::vector<std::string>> res (0);
-	for(int i=0; i<s; i++)
-	{
-		cout << s-i << " - " <<  sequences[i].header() << endl;
-		codes=encode_ambiguous_string(sequences[i].sequence(),k);
-		slidingVarWindow(codes, wi, ws, top, *db, &branches, &windows);
-		res.push_back(printChange(windows, shift, ref, theta, k, dbtype));
-		clearBranches(&branches);
-		windInit(&windows);
-	}
 	std::string outfile=oadd+"res-"+qfile+".txt";
 	remove(&(outfile[0]));
 	ofstream writef(outfile, ios::app);
 	printHead(qfile, dbtype, theta, ws, cflag, kflag, &writef);
-	mergeNA(res, qadd, cflag, lflag, kflag, &writef);
+	for(int i=0; i<s; i++)
+	{
+		cout << s-i << " - " <<  sequences[i].header() << endl;
+		writef << ">" << sequences[i].header() << endl;
+		codes=encode_ambiguous_string(sequences[i].sequence(),k);
+		slidingVarWindow(codes, wi, ws, top, *db, &branches, &windows, &rat, dbtype);
+		mergeNA(printChange(windows, shift, ref, theta, rat, dbtype), cflag, lflag, kflag, &writef);
+		clearBranches(&branches);
+		windInit(&windows);
+		rat.clear();
+	}
 	writef.close();
 	cout << "overall time " << float(clock()-t)/CLOCKS_PER_SEC<< " sec." <<endl;
-	cout << endl << "The End!" << endl;
+	cout << "The End !" << endl;
 	return 0;
 }

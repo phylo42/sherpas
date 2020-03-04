@@ -34,6 +34,8 @@ public:
 	void heapDown(int i);
 	void heapUp(int i);
 	void getTop(int m);
+	double lRatio(int k);
+	double dRatio(int k);
 
 
 private:
