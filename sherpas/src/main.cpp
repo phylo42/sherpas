@@ -20,7 +20,6 @@
 
 using namespace std;
 
-
 int main(int argc, char** argv) {
 	std::ios::sync_with_stdio(false);
 	int dflag=0;
@@ -38,8 +37,8 @@ int main(int argc, char** argv) {
 	std::string qadd="";
 	std::string gadd="";
 	std::string oadd="";
-	int ws=500;
-	double theta=10;
+	int ws=300;
+	double theta=100;
 	char dbtype='F';
 	cout << "Let's go ! @_y" << endl;
 	clock_t t=clock();
@@ -74,7 +73,7 @@ int main(int argc, char** argv) {
 				dbtype=optarg[0];
 				if(dbtype=='R' && tflag==0)
 				{
-					theta=0.9;
+					theta=0.99;
 				}
 				mflag=1;
 				break;
