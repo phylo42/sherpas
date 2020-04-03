@@ -24,13 +24,7 @@ __Outputs:__
 
 ## Construction of a phylo-kmer database
 
-The construction of a **phylo-kmer database**, built from a reference phylogeny, is performed by  RAPPAS ( see https://www.ncbi.nlm.nih.gov/pubmed/30698645 and . This approach is alignment-free, in the sense that future query sequences do not need to be aligned with the reference alignment. Instead, query k-mers will be searched against the phylo-kmer database, in which each k-mer is associated to phylogeny branches and  ta probability to belong to this branch. 
-
-##  SHERPAS algorithm: general idea
-
-In SHERPAS, the phylo-kmer database built by RAPPAS is used for the purpose of inter-subtype recombination detection. In essence, SHERPAS follows a "sliding-window" approach, that consists in investigating short subsequences (the so-called “windows”) of the query sequence in turn. For each window, SHERPAS analyzes k-mer matches between query sequence and phylo-kmer database to assign a best-matching clade among a set of user-defined clades (of the reference phylogeny). If, along the sequence, the best-matching clade changes significantly, this can be taken as a potential signal for recombination.
-
-
+The construction of a **phylo-kmer database**, built from a reference phylogeny, is performed by RAPPAS (see https://www.ncbi.nlm.nih.gov/pubmed/30698645). The database builder and its documentation are available at https://github.com/phylo42/rappas2.
 
 # Usage
 
@@ -75,7 +69,7 @@ Option | Description | Default value
 
 These are the three necessary files used by SHERPAS to run, plus the desired output directory. Error messages will appear if one of them is missing, in which case the program will abort.
 
-**-d** : The path to the .rps database. All the information on a reference alignment and the corresponding phylogeny used by SHERPAS are stored in a phylo-kmer database, that needs to be built prior to using SHERPAS (https://gite.lirmm.fr/rappas-team/rappas-build, see [link to rappas-build documentation]). Once built, the database is serialized and stored as a .rps file. Thus, this building step only needs to be performed once for a given reference alignment and a given kmer size k (note also that the database can independently be used with RAPPAS and SHERPAS).
+**-d** : The path to the .rps database. All the information on a reference alignment and the corresponding phylogeny used by SHERPAS are stored in a phylo-kmer database, that needs to be built prior to using SHERPAS (https://github.com/phylo42/rappas2, see [link to rappas-build documentation]). Once built, the database is serialized and stored as a .rps file. Thus, this building step only needs to be performed once for a given reference alignment and a given kmer size k (note also that the database can independently be used with RAPPAS and SHERPAS).
 
 **-q** : The path to a .fasta file of query sequences. The sequences in this dataset will be investigated individually by SHERPAS, using the information contained in the database.
 
