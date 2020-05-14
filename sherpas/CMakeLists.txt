@@ -15,12 +15,7 @@ add_executable(
         src/output.h
 )
 
-find_package(Boost REQUIRED COMPONENTS program_options filesystem iostreams)
-find_package(OpenMP REQUIRED)
-
 target_link_libraries(SHERPAS
         PRIVATE
             rappas::core_n
-            Boost::iostreams
-            OpenMP::OpenMP_CXX
         )
