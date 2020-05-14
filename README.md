@@ -30,6 +30,19 @@ The construction of a **phylo-kmer database**, built from a reference phylogeny,
 
 ## Compilation and execution
 
+**Prerequisites:**
+
+* Make sure Boost Librairies >=1.65 are present.
+* Your GCC compiler must support c++17
+* CMake >= 3.10 installed
+
+In debian, these can be isntalled with:
+```
+sudo apt install build-essential
+sudo apt install cmake
+sudo apt install libboost-all-dev
+```
+
 **Compilation:**
 
 Clone the repository with recursive option:
