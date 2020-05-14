@@ -36,7 +36,7 @@ The construction of a **phylo-kmer database**, built from a reference phylogeny,
 * Your GCC compiler must support c++17
 * CMake >= 3.10 installed
 
-In debian, these can be isntalled with:
+In debian, these can be installed with:
 ```
 sudo apt install build-essential
 sudo apt install cmake
