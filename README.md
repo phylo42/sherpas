@@ -82,7 +82,7 @@ Option | Description | Default value
 
 These are the three necessary files used by SHERPAS to run, plus the desired output directory. Error messages will appear if one of them is missing, in which case the program will abort.
 
-**-d** : The path to the .rps database. All the information on a reference alignment and the corresponding phylogeny used by SHERPAS are stored in a phylo-kmer database, that needs to be built prior to using SHERPAS (https://github.com/phylo42/rappas2, see [link to rappas-build documentation]). Once built, the database is serialized and stored as a .rps file. Thus, this building step only needs to be performed once for a given reference alignment and a given kmer size k (note also that the database can independently be used with RAPPAS and SHERPAS).
+**-d** : The path to the .rps database. All the information on a reference alignment and the corresponding phylogeny used by SHERPAS are stored in a phylo-kmer database, that needs to be built prior to using SHERPAS (https://github.com/phylo42/rappas2). Once built, the database is serialized and stored as a .rps file. Thus, this building step only needs to be performed once for a given reference alignment and a given kmer size k (note also that the database can independently be used with RAPPAS and SHERPAS).
 
 **-q** : The path to a .fasta file of query sequences. The sequences in this dataset will be investigated individually by SHERPAS, using the information contained in the database.
 
@@ -156,3 +156,17 @@ Alternatively (when option -l is activated), the output for one given query is s
 ```
 
 -Once all the queries have been processed, the time taken by the program to run (not including the time taken to read all the necessary files or to build the database, but including the time taken to write the output file) is printed in the console.
+
+
+# Examples
+
+The following example is a step-by-step description on how to quickly run SHERPAS on the HBV queries *queries-3000.fasta*, that can be found in the *example/HBV-full/* repository.
+
+- Go to the *release-build* repository.
+- Download then unzip the compressed file *pkDB-HBV-full.zip* from https://datadryad.org/stash/downloads/file_stream/373882.
+- Run:
+```shell
+sherpas/SHERPAS -d ./pkDB-HBV-full/DB\_k10\_o1.5.rps -q examples/queries-3000.fasta-o ./out/ -g ./pkDB-HBV-full/ref-groups.csv -c
+```
+
+The output file *res-queries-3000.txt* is created in the *out/* repository. It can be compared with the file *info-queries.txt* present in the *example/HBV-full/* repository, that reports the true composition of the queries in *queries-3000.fasta*.
