@@ -114,6 +114,8 @@ std::vector<std::string> printChange(std::vector<std::vector<Arc*>> result, int 
 				res.push_back(ref[aref]);
 			}
 		}
+		delete result[i][0];
+		delete result[i][1];
 	}
 	res.push_back(to_string(s+2*shift));
 	return res;
