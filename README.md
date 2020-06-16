@@ -8,6 +8,15 @@ __Reference:__
 
 __*Scholz GE, Linard B, Romashchenko N, Rivals E, Pardi F. Rapid screening and detection of inter-(sub)type recombinants using phylo-k-mers. To be submitted to Bioinformatics (submitted)*__
 
+ - [Overview](#overview)
+ - [Usage](#usage)
+   - [Compilation and rapid test](#compilation-and-rapid-test)
+ - [SHERPAS Execution](#sherpas-execution)
+   - [Mandatory options](#mandatory-options)
+   - [Optional parameters](#optional-parameters)
+   - [Advanced customization](#advanced-customization)
+ - [Outputs](#outputs)
+
 
  # Overview
 
@@ -153,7 +162,7 @@ These are options that are disabled by default but may be useful in some circons
 **-k** : Skips the post-processing part of unassigned segments.
 
 
-#  Output
+#  Outputs
 
 A .txt file is written to the output directory given with -o.
 The header of the file summarizes information about the query file and the parameters used.
