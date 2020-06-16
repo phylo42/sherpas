@@ -56,12 +56,38 @@ cmake ..
 make
 ```
 
-**Run SHERPAS:**
+## Rapid test:
 
-In the release-build repository:
+From the release-build repository in which you compiled sources:
 ```shell
 sherpas/SHERPAS [options] 
 ```
+
+A rapid prediction of HBV recombinant viruses can be launched with the following commands.
+Still form the release-build/ directory (see compilation), launch these commands:
+
+```shell
+# download a SHERPAS database pre-built for HBV
+wget https://www.dropbox.com/s/m75hfo4mem4eb46/pkDB-HBV-full.zip
+unzip pkDB-HBV-full.zip
+
+# launch a prediction for 3000 HBV queries, using the pre-built HBV database:
+sherpas/SHERPAS -d DB_k10_o1.5.rps -q ../examples/HBV_all/queries-3000.fasta -o prefix_ -g ref-groups.csv -c
+```
+
+These queries should be analyze in less than 5 minutes (using a 3Ghz i7 CPU).
+You should obtain the following file in the same directory :
+
+``` shell
+# the results itself, e.g a the list of recombinant regions detected for each query:
+prefix_res-queries-3000.txt 
+# the queries in fasta format, matching the coordinates of prefix_res-queries-3000.txt 
+prefix_queries-3000-circ300.fasta
+```
+More pre-built database (those used in SHERPAS manuscript) can be downloaded from Dryad:
+https://datadryad.org/stash/downloads/file_stream/373882.
+
+## SHERPAS options
 
 Command-line options are the following (see detailed description below):
 
@@ -156,17 +182,3 @@ Alternatively (when option -l is activated), the output for one given query is s
 ```
 
 -Once all the queries have been processed, the time taken by the program to run (not including the time taken to read all the necessary files or to build the database, but including the time taken to write the output file) is printed in the console.
-
-
-# Examples
-
-The following example is a step-by-step description on how to quickly run SHERPAS on the HBV queries *queries-3000.fasta*, that can be found in the *example/HBV-full/* repository.
-
-- Go to the *release-build* repository.
-- Download then unzip the compressed file *pkDB-HBV-full.zip* from https://datadryad.org/stash/downloads/file_stream/373882.
-- Run:
-```shell
-sherpas/SHERPAS -d ./pkDB-HBV-full/DB\_k10\_o1.5.rps -q examples/queries-3000.fasta-o ./out/ -g ./pkDB-HBV-full/ref-groups.csv -c
-```
-
-The output file *res-queries-3000.txt* is created in the *out/* repository. It can be compared with the file *info-queries.txt* present in the *example/HBV-full/* repository, that reports the true composition of the queries in *queries-3000.fasta*.
