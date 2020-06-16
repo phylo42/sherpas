@@ -56,7 +56,7 @@ cmake ..
 make
 ```
 
-## Rapid test:
+**Rapid test:**
 
 From the release-build repository in which you compiled sources:
 ```shell
