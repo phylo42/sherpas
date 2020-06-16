@@ -75,7 +75,7 @@ unzip pkDB-HBV-full.zip
 sherpas/SHERPAS -d DB_k10_o1.5.rps -q ../examples/HBV_all/queries-3000.fasta -o prefix_ -g ref-groups.csv -c
 ```
 
-These queries should be analyze in less than 5 minutes (using a 3Ghz i7 CPU).
+These 3000 queries should be analyze in less than 5 minutes (using a 3Ghz i7 CPU).
 You should obtain the following file in the same directory :
 
 ``` shell
