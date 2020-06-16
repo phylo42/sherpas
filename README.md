@@ -28,7 +28,7 @@ The construction of a **phylo-kmer database**, built from a reference phylogeny,
 
 # Usage
 
-## Compilation and execution
+## Compilation and rapid test
 
 **Prerequisites:**
 
@@ -87,7 +87,7 @@ prefix_queries-3000-circ300.fasta
 More pre-built database (those used in SHERPAS manuscript) can be downloaded from Dryad:
 https://datadryad.org/stash/downloads/file_stream/373882.
 
-## SHERPAS options
+## SHERPAS Execution
 
 Command-line options are the following (see detailed description below):
 
