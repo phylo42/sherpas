@@ -63,12 +63,10 @@ Stil from the `release-build` repository in which you compiled sources, execute 
 
 ```shell
 # download a SHERPAS database already pre-built from HBV pure types: 
-
 wget https://www.dropbox.com/s/m75hfo4mem4eb46/pkDB-HBV-full.zip
 unzip pkDB-HBV-full.zip
 
 # launch a prediction for 3000 HBV queries, using the pre-built HBV database:
-
 sherpas/SHERPAS -d DB_k10_o1.5.rps -q ../examples/HBV_all/queries-3000.fasta -o prefix_ -g ref-groups.csv -c
 ```
 
