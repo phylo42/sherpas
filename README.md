@@ -58,20 +58,17 @@ make
 
 **Rapid test:**
 
-From the release-build repository in which you compiled sources:
-```shell
-sherpas/SHERPAS [options] 
-```
-
-A rapid prediction of HBV recombinant viruses can be launched with the following commands.
-Still form the release-build/ directory (see compilation), launch these commands:
+A rapid prediction of HBV (Hepathitis B Virus) recombinants can be performed.
+Stil from the `release-build` repository in which you compiled sources, execute the following commands:
 
 ```shell
-# download a SHERPAS database pre-built for HBV
+# download a SHERPAS database already pre-built from HBV pure types: 
+
 wget https://www.dropbox.com/s/m75hfo4mem4eb46/pkDB-HBV-full.zip
 unzip pkDB-HBV-full.zip
 
 # launch a prediction for 3000 HBV queries, using the pre-built HBV database:
+
 sherpas/SHERPAS -d DB_k10_o1.5.rps -q ../examples/HBV_all/queries-3000.fasta -o prefix_ -g ref-groups.csv -c
 ```
 
@@ -81,6 +78,7 @@ You should obtain the following file in the same directory :
 ``` shell
 # the results itself, e.g a the list of recombinant regions detected for each query:
 prefix_res-queries-3000.txt 
+
 # the queries in fasta format, matching the coordinates of prefix_res-queries-3000.txt 
 prefix_queries-3000-circ300.fasta
 ```
@@ -88,6 +86,10 @@ More pre-built database (those used in SHERPAS manuscript) can be downloaded fro
 https://datadryad.org/stash/downloads/file_stream/373882.
 
 ## SHERPAS Execution
+
+```shell
+sherpas/SHERPAS [options] 
+```
 
 Command-line options are the following (see detailed description below):
 
