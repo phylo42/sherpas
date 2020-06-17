@@ -83,7 +83,7 @@ These 3000 queries should be analyze in less than 5 minutes (using a 3Ghz i7 CPU
 You should obtain the following file in the same directory :
 
 ``` shell
-# the results itself, e.g a the list of recombinant regions detected for each query:
+# the results themselves, e.g a the list of recombinant regions detected for each query:
 prefix_res-queries-3000.txt 
 
 # the queries in fasta format, matching the coordinates of prefix_res-queries-3000.txt 
