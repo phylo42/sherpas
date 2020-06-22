@@ -2,11 +2,11 @@
 
 **Screening Historical Events of Recombination in a Phylogeny via Ancestral Sequences**
 
-A new, alignment-free genome recombination detection tool exploiting the idea of phylo-kmers (originally developed in  from RAPPAS, Linard et al. 2019) to accelerate the process by several orders of magnitude while keeping comparable accuracy. 
+A new, alignment-free genome recombination detection tool exploiting the idea of phylo-kmers (originally developed in RAPPAS, Linard et al. 2019) to accelerate the process by several orders of magnitude while keeping comparable accuracy. 
 
 __Reference:__
 
-__*Scholz GE, Linard B, Romashchenko N, Rivals E, Pardi F. Rapid screening and detection of inter-(sub)type recombinants using phylo-k-mers. To be submitted to Bioinformatics (submitted)*__
+*Scholz GE, Linard B, Romashchenko N, Rivals E, Pardi F. Rapid screening and detection of inter-type viral recombinants using phylo-k-mers. (Submitted)*
 
  - [Overview](#overview)
  - [Usage](#usage)
@@ -21,17 +21,20 @@ __*Scholz GE, Linard B, Romashchenko N, Rivals E, Pardi F. Rapid screening and d
  # Overview
 
 __Inputs:__
-- A reference phylogeny built with (ideally) non-recombinant genomes (or “pure types”) in __newick format__
-- The multiple alignment from which was built this phylogeny, in __fasta format__.
-- Table associating each tree leaf to a type (see examples below).
--  A set of query genomes for which recombination screening will be performed, in __fasta format__.
 
+- A phylo-kmer database, in __.rps__ format.
+- A table associating each tree leaf to a type (a.k.a. "strain"), in __csv__ format.
+- A set of query sequences (e.g. whole genomes, long reads) for which recombination screening will be performed, in __fasta__ format.
 
 __Outputs:__
 - Table of detected recombination patterns
 
+## Construction of a phylo-kmer database (pkDB)
 
-## Construction of a phylo-kmer database
+In the absence of a pre-computed pkDB, you will need the following to construct your own pkDB: 
+- A reference phylogeny built with (ideally) non-recombinant genomes (or “pure types”) in __newick format__.
+- The multiple alignment from which was built this phylogeny, in __fasta format__.
+
 
 The construction of a **phylo-kmer database**, built from a reference phylogeny, is performed by RAPPAS (see https://www.ncbi.nlm.nih.gov/pubmed/30698645). The database builder and its documentation are available at https://github.com/phylo42/rappas2.
 
