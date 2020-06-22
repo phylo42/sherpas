@@ -26,13 +26,13 @@ __Inputs:__
 - A set of query sequences (e.g. whole genomes, long reads) for which recombination screening will be performed, in __fasta__ format.
 
 __Outputs:__
-- Table of detected recombination patterns.
+- Table of recombination patterns detected in the query sequences.
 
-## Construction of a phylo-kmer database (pkDB)
+### Construction of a phylo-kmer database (pkDB)
 
 In the absence of a pre-computed pkDB, you will need the following to construct your own pkDB: 
 
-- *Reference alignment*: a multiple alignment containing a number of "reference" sequences from each of the strains, in __fasta__ format. These sequences should be "pure" (i.e. non recombinant) with respect to their strain.
+- *Reference alignment*: a multiple alignment containing a number of reference sequences from each of the strains, in __fasta__ format. These sequences should be pure (i.e. non recombinant) with respect to their strain.
 - *Reference tree*: a phylogenetic tree built from the reference alignment, in __newick__ format.
 
 The construction of the pkDB should be performed with [RAPPAS2](https://github.com/phylo42/rappas2). Its code and documentation are available at https://github.com/phylo42/rappas2.
@@ -47,7 +47,7 @@ The construction of the pkDB should be performed with [RAPPAS2](https://github.c
 * Your GCC compiler must support c++17
 * CMake >= 3.10 installed
 
-In debian, these can be installed with:
+In Debian, these can be installed with:
 ```
 sudo apt install build-essential
 sudo apt install cmake
@@ -70,7 +70,7 @@ make
 **Rapid test:**
 
 A rapid prediction of HBV (Hepathitis B Virus) recombinants can be performed.
-Stil from the `release-build` repository in which you compiled sources, execute the following commands:
+From the `release-build` repository in which you compiled sources, execute the following commands:
 
 ```shell
 # download a SHERPAS database already pre-built from HBV pure types: 
@@ -81,7 +81,7 @@ unzip pkDB-HBV-full.zip
 sherpas/SHERPAS -d DB_k10_o1.5.rps -q ../examples/HBV_all/queries-3000.fasta -o prefix_ -g ref-groups.csv -c
 ```
 
-These 3000 queries should be analyze in less than 5 minutes (using a 3Ghz i7 CPU).
+These 3000 queries should be analyzed in less than 5 minutes (using a 3Ghz i7 CPU).
 You should obtain the following file in the same directory :
 
 ``` shell
@@ -94,7 +94,7 @@ prefix_queries-3000-circ300.fasta
 More pre-built database (those used in SHERPAS manuscript) can be downloaded from Dryad:
 https://datadryad.org/stash/downloads/file_stream/373882.
 
-## SHERPAS Execution
+# SHERPAS Execution
 
 ```shell
 sherpas/SHERPAS [options] 
