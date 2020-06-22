@@ -91,7 +91,7 @@ prefix_res-queries-3000.txt
 # the queries in fasta format, matching the coordinates of prefix_res-queries-3000.txt 
 prefix_queries-3000-circ300.fasta
 ```
-More pre-built pkDBs (those used in the SHERPAS manuscript) can be downloaded from Dryad:
+More pre-built phylo-kmer databases (those used in the SHERPAS manuscript) can be downloaded from Dryad:
 https://datadryad.org/stash/downloads/file_stream/373882.
 
 # SHERPAS Execution
@@ -104,26 +104,27 @@ Command-line options are the following (see detailed description below):
 
 Option | Description | Default value
 --- | --- | ---
-**-d** | path to the database | None (mandatory field)
-**-q** | path to the queries file | None (mandatory field)
+**-d** | path to the phylo-kmer database | None (mandatory field)
 **-g** | path to the strain-assignment file | None (mandatory field)
-**-o** | path to the output directory | None (mandatory field)
-**-w** |window size (>99)	 | 500
-**-m** |method used (F or R) | F
-**-t** | threshold for signal control | 10 (F) or 0.9 (R)
+**-q** | path to the queries file | None (mandatory field)
+**-o** | prefix for the output file(s) | None (mandatory field)
+**-w** | window size (>99)	 | 300
+**-m** | method used (F or R) | F
+**-t** | threshold for unassigned regions | 100 (F) or 0.99 (R)
 **-c** | activates circularity options | None (none expected)
 **-l** | changes output layout | None (none expected)
 **-k** | disables N/A regions post treatment | None (none expected)
+<!--- **-o** | path to the output directory | None (mandatory field) --->
 
 ## Mandatory options
 
-These are the three necessary files used by SHERPAS to run, plus the desired output directory. Error messages will appear if one of them is missing, in which case the program will abort.
+**-d** : The path to the .rps file containing the phylo-kmer database. All the information on a reference alignment and the corresponding phylogeny used by SHERPAS are stored in this file, that needs to be built prior to using SHERPAS (with [RAPPAS2](https://github.com/phylo42/rappas2)). This building step only needs to be performed once for a given reference alignment. 
+<!---
+and a given kmer size k (note also that the database can independently be used with RAPPAS and SHERPAS).
+--->
 
-**-d** : The path to the .rps database. All the information on a reference alignment and the corresponding phylogeny used by SHERPAS are stored in a phylo-kmer database, that needs to be built prior to using SHERPAS (https://github.com/phylo42/rappas2). Once built, the database is serialized and stored as a .rps file. Thus, this building step only needs to be performed once for a given reference alignment and a given kmer size k (note also that the database can independently be used with RAPPAS and SHERPAS).
-
-**-q** : The path to a .fasta file of query sequences. The sequences in this dataset will be investigated individually by SHERPAS, using the information contained in the database.
-
-**-g** : The path to a .csv file defining the mapping between strains and genomes in the reference alignment used to build the database. This file consists of two columns, the first one containing the name of the sequences in the reference alignment (these names must match the names of in the alignment file used to build the database), the second one the corresponding strains.
+**-g** : The path to a .csv file that specifies the mapping between strains and sequences in the reference alignment.
+This file consists of two columns, the first one containing the name of the sequences in the reference alignment (these names must match the names of in the alignment file used to build the database), the second one the corresponding strains.
 Important note on typography: for technical reasons, neither the sequence names nor the strains names should contain a comma (‘,’). Moreover, strain names should not contain a star (‘*’).
 
 *Example:*
@@ -134,13 +135,17 @@ ref_3,B
 ref_4,C
 ```
 
-**-o** : The path to the output directory, where the result files will be created.
+**-q** : The path to a .fasta file of query sequences. The sequences in this dataset will be investigated individually by SHERPAS, using the information in the two files specified by the two options above.
+
+**-o** : A prefix for the output file(s). This can also be used to specify an output directory (end the prefix with ‘/’).
+See section [Outputs](#outputs) below for details.
+<!--- The path to the output directory, where the result files will be created. --->
 
 ## Optional parameters
 
 The following are numerical parameters with pre-set default values that produced good a good balance between sensitivity and precision for viral genomes such as HIV or HCV genomes. Different values may produce different levels of accuracy and with other references, it is advised to explore more values .
 
-**-w** : The size, in k-mers, of the sliding window (default value 500). 
+**-w** : The size, in number of *k*-mers, of the sliding window (default value 300). 
 
 A larger window size will make the information more precise, but short recombinant segments might remain undetected. The minimum possible value is 100, and this value should not exceed the length in k-mers* of the shorter sequence in the query file.
 *The number of kmers in a sequence of length L is L+1-k, where k is the k-mer size.
