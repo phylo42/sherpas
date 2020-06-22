@@ -138,33 +138,42 @@ ref_4,C
 **-q** : The path to a .fasta file of query sequences. The sequences in this dataset will be investigated individually by SHERPAS, using the information in the two files specified by the two options above.
 
 **-o** : A prefix for the output file(s). This can also be used to specify an output directory (end the prefix with ‘/’).
-See section [Outputs](#outputs) below for details.
+See section [Outputs](#outputs) below for details on the output format.
 <!--- The path to the output directory, where the result files will be created. --->
 
 ## Optional parameters
 
-The following are numerical parameters with pre-set default values that produced good a good balance between sensitivity and precision for viral genomes such as HIV or HCV genomes. Different values may produce different levels of accuracy and with other references, it is advised to explore more values .
+The parameters below influence the behavior of SHERPAS both in terms of accuracy and running times.
+We refer the user to the manuscript for a discussion of how the parameters below should be adjusted, 
+depending on the different use cases for SHERPAS. 
 
 **-w** : The size, in number of *k*-mers, of the sliding window (default value 300). 
 
-A larger window size will make the information more precise, but short recombinant segments might remain undetected. The minimum possible value is 100, and this value should not exceed the length in k-mers* of the shorter sequence in the query file.
-*The number of kmers in a sequence of length L is L+1-k, where k is the k-mer size.
+The window size controls how easily SHERPAS switches between different strain classifications along the query. 
+Smaller windows tend to produce more fragmented partitions of the queries, thus increasing the detection of short recombinant segments, but also that of false positive recombinants.
+The minimum possible value is 100, and the maximum is the length in k-mers* of the shortest sequence in the query file.
+(*The number of kmers in a sequence of length L is L+1-k, where k is the k-mer size.) 
+We advise against any value smaller than 200 or larger than 600. 
 
 **-m** : The method used by SHERPAS (default value F). 
 
-Currently two options are possible, “full” (called with F) and “reduced” (called with R). While “full” is usually more precise, “reduced” is much faster.
+Currently two options are possible, “full” (called with F) and “reduced” (called with R). While “full” is usually more accurate, “reduced” is much faster.
 
-**-t** : The threshold for post-control (default value 10 for method F and 0.9 for method R). 
+**-t** : The threshold controlling unassigned regions (default value 100 for method F and 0.99 for method R). 
 
-A section of a query can be returned as “unassigned” if the evidence for any particular strain is too weak. This threshold governs the definition of “too weak”, in a way that depends on the method chosen. For method F, the parameter controlled by the threshold is the ratio of the best score over the second best score, thus the threshold should be either zero or greater than one (any threshold between zero and one has the same effect as a threshold of zero) . For method R, it is the ratio of the best score over the sum of all scores, so the threshold must be comprised between zero and one in that case (a threshold greater than one will return “unassigned” for the whole sequence, as the ratio computed is always smaller than one). For both methods, a threshold of zero means that no such control is operated.
+A section of a query can be returned as “unassigned” (N/A) if the evidence for any particular strain is too weak. This threshold governs the definition of “too weak”, with high thresholds generally producing larger unassigned regions, i.e. more conservative strain assignments. The precise meaning of this threshold depends on the chosen method: 
+In method F, in order for a region to be assigned to a strain, the ratio of the best score over the second best score must be larger than the threshold. In method R, it is the ratio of the best score over the sum of all scores that must be larger than the threshold. 
+<!---
+For method F, the parameter controlled by the threshold is the ratio of the best score over the second best score, thus the threshold should be either zero or greater than one (any threshold between zero and one has the same effect as a threshold of zero). For method R, it is the ratio of the best score over the sum of all scores, so the threshold must be comprised between zero and one in that case (a threshold greater than one will return “unassigned” for the whole sequence, as the ratio computed is always smaller than one). For both methods, a threshold of zero means that no such control is operated.
+--->
 
 ## Advanced customization
 
-These are options that are disabled by default but may be useful in some circonstances.
+These are options that are disabled by default but may be useful in some circumstances.
 
-**-c** : Use when queries are full, circular genomes.
+**-c** : Use when queries are whole circular genomes.
 
-**-l** : Changes the output mode to “linear” (see “Output” section below).
+**-l** : Changes the output mode to “linear” (see Output section below).
 
 **-k** : Skips the post-processing part of unassigned segments.
 
