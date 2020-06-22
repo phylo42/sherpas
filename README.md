@@ -2,7 +2,7 @@
 
 **Screening Historical Events of Recombination in a Phylogeny via Ancestral Sequences**
 
-A new, alignment-free genome recombination detection tool exploiting the idea of phylo-kmers (originally developed in RAPPAS, Linard et al. 2019) to accelerate the process by several orders of magnitude while keeping comparable accuracy. 
+A new, alignment-free genome recombination detection tool exploiting the idea of phylo-kmers (originally developed in [RAPPAS](https://github.com/phylo42/RAPPAS), Linard et al. 2019) to accelerate the process by several orders of magnitude while keeping comparable accuracy. 
 
 __Reference:__
 
@@ -91,7 +91,7 @@ prefix_res-queries-3000.txt
 # the queries in fasta format, matching the coordinates of prefix_res-queries-3000.txt 
 prefix_queries-3000-circ300.fasta
 ```
-More pre-built database (those used in SHERPAS manuscript) can be downloaded from Dryad:
+More pre-built pkDBs (those used in the SHERPAS manuscript) can be downloaded from Dryad:
 https://datadryad.org/stash/downloads/file_stream/373882.
 
 # SHERPAS Execution
