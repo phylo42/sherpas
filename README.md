@@ -180,12 +180,14 @@ These are options that are disabled by default but may be useful in some circums
 
 #  Outputs
 
-A .txt file is written to the output directory given with -o.
+The results are written to a .txt file with the following format.
 The header of the file summarizes information about the query file and the parameters used.
-Then for each query, a first line indicates the name of the query (e.g. its fasta header), and each subsequent line gives coordinates of  a distinct sequence segment and the strain to which it was assigned, in the form:
+Then for each query, a line indicates the name of the query (its fasta header), 
+and each subsequent line gives coordinates of a distinct sequence segment and the strain to which it was assigned, in the form:
 ```
-[first_position]	[last_position]	[strain]
+[first_position] [last_position]	[strain]
 ```
+The coordinates are 1-based and are relative to the query sequences with gaps (if any) removed. This is the same format as that used by [jpHMM](http://jphmm.gobics.de/), which facilitates comparisons.  
 
 *Example:*
 ```
@@ -195,7 +197,7 @@ Then for each query, a first line indicates the name of the query (e.g. its fast
 7287	8663	B
 ```
 
-Alternatively (when option -l is activated), the output for one given query is shrinked to a single comma separated line, in the form:
+Alternatively (when option -l is activated), the output for one given query is reduced to a single comma separated line, in the form:
 ```
 0,[strain_1],[breakpoint_1],[strain_2],...,[breakpoint_n-1],[strain_n],[end_of_sequence_position]
 ```
@@ -206,4 +208,4 @@ Alternatively (when option -l is activated), the output for one given query is s
 0,B,4594,A,7287,B,8663
 ```
 
--Once all the queries have been processed, the time taken by the program to run (not including the time taken to read all the necessary files or to build the database, but including the time taken to write the output file) is printed in the console.
+During the program execution, some information about its progress are written to the console. The running time employed to read all input files, and that for all subsequent operations are reported separately.
