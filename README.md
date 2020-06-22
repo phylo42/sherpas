@@ -104,7 +104,7 @@ Option | Description | Default value
 --- | --- | ---
 **-d** | path to the database | None (mandatory field)
 **-q** | path to the queries file | None (mandatory field)
-**-g** | path to the group-assignment file | None (mandatory field)
+**-g** | path to the strain-assignment file | None (mandatory field)
 **-o** | path to the output directory | None (mandatory field)
 **-w** |window size (>99)	 | 500
 **-m** |method used (F or R) | F
@@ -121,8 +121,8 @@ These are the three necessary files used by SHERPAS to run, plus the desired out
 
 **-q** : The path to a .fasta file of query sequences. The sequences in this dataset will be investigated individually by SHERPAS, using the information contained in the database.
 
-**-g** : The path to a .csv file defining the mapping between groups and genomes in the reference alignment used to build the database. This file consists of two columns, the first one containing the name of the sequences in the reference alignment (these names must match the names of in the alignment file used to build the database), the second one the corresponding groups.
-Important note on typography: for technical reasons, neither the sequence names nor the groups names should contain a comma (‘,’). Moreover, group names should not contain a star (‘*’).
+**-g** : The path to a .csv file defining the mapping between strains and genomes in the reference alignment used to build the database. This file consists of two columns, the first one containing the name of the sequences in the reference alignment (these names must match the names of in the alignment file used to build the database), the second one the corresponding strains.
+Important note on typography: for technical reasons, neither the sequence names nor the strains names should contain a comma (‘,’). Moreover, strain names should not contain a star (‘*’).
 
 *Example:*
 ```
@@ -149,7 +149,7 @@ Currently two options are possible, “full” (called with F) and “reduced”
 
 **-t** : The threshold for post-control (default value 10 for method F and 0.9 for method R). 
 
-A section of a query can be returned as “unassigned” if the evidence for any particular group is too weak. This threshold governs the definition of “too weak”, in a way that depends on the method chosen. For method F, the parameter controlled by the threshold is the ratio of the best score over the second best score, thus the threshold should be either zero or greater than one (any threshold between zero and one has the same effect as a threshold of zero) . For method R, it is the ratio of the best score over the sum of all scores, so the threshold must be comprised between zero and one in that case (a threshold greater than one will return “unassigned” for the whole sequence, as the ratio computed is always smaller than one). For both methods, a threshold of zero means that no such control is operated.
+A section of a query can be returned as “unassigned” if the evidence for any particular strain is too weak. This threshold governs the definition of “too weak”, in a way that depends on the method chosen. For method F, the parameter controlled by the threshold is the ratio of the best score over the second best score, thus the threshold should be either zero or greater than one (any threshold between zero and one has the same effect as a threshold of zero) . For method R, it is the ratio of the best score over the sum of all scores, so the threshold must be comprised between zero and one in that case (a threshold greater than one will return “unassigned” for the whole sequence, as the ratio computed is always smaller than one). For both methods, a threshold of zero means that no such control is operated.
 
 ## Advanced customization
 
@@ -166,9 +166,9 @@ These are options that are disabled by default but may be useful in some circons
 
 A .txt file is written to the output directory given with -o.
 The header of the file summarizes information about the query file and the parameters used.
-Then for each query, a first line indicates the name of the query (e.g. its fasta header), and each subsequent line gives coordinates of  a distinct sequence segment and the group to which it was assigned, in the form:
+Then for each query, a first line indicates the name of the query (e.g. its fasta header), and each subsequent line gives coordinates of  a distinct sequence segment and the strain to which it was assigned, in the form:
 ```
-[first_position]	[last_position]	[group]
+[first_position]	[last_position]	[strain]
 ```
 
 *Example:*
@@ -181,7 +181,7 @@ Then for each query, a first line indicates the name of the query (e.g. its fast
 
 Alternatively (when option -l is activated), the output for one given query is shrinked to a single comma separated line, in the form:
 ```
-0,[group_1],[breakpoint_1],[group_2],...,[breakpoint_n-1],[group_n],[end_of_sequence_position]
+0,[strain_1],[breakpoint_1],[strain_2],...,[breakpoint_n-1],[strain_n],[end_of_sequence_position]
 ```
 
 *Example:*
