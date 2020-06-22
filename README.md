@@ -21,22 +21,21 @@ __Reference:__
  # Overview
 
 __Inputs:__
-
-- A phylo-kmer database, in __.rps__ format.
-- A table associating each tree leaf to a type (a.k.a. "strain"), in __csv__ format.
+- A phylo-kmer database (usually having a __.rps__ extension) constructed from a reference alignment and tree (see below).
+- A table associating each sequence in the reference alignment to a type (a.k.a. "strain"), in __csv__ format.
 - A set of query sequences (e.g. whole genomes, long reads) for which recombination screening will be performed, in __fasta__ format.
 
 __Outputs:__
-- Table of detected recombination patterns
+- Table of detected recombination patterns.
 
 ## Construction of a phylo-kmer database (pkDB)
 
 In the absence of a pre-computed pkDB, you will need the following to construct your own pkDB: 
-- A reference phylogeny built with (ideally) non-recombinant genomes (or “pure types”) in __newick format__.
-- The multiple alignment from which was built this phylogeny, in __fasta format__.
 
+- *Reference alignment*: a multiple alignment containing a number of "reference" sequences from each of the strains, in __fasta__ format. These sequences should be "pure" (i.e. non recombinant) with respect to their strain.
+- *Reference tree*: a phylogenetic tree built from the reference alignment, in __newick__ format.
 
-The construction of a **phylo-kmer database**, built from a reference phylogeny, is performed by RAPPAS (see https://www.ncbi.nlm.nih.gov/pubmed/30698645). The database builder and its documentation are available at https://github.com/phylo42/rappas2.
+The construction of the pkDB should be performed with [RAPPAS2](https://github.com/phylo42/rappas2). Its code and documentation are available at https://github.com/phylo42/rappas2.
 
 # Usage
 
