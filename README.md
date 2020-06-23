@@ -21,23 +21,27 @@ Scholz GE, Linard B, Romashchenko N, Rivals E, Pardi F. *Rapid screening and det
  # Overview
 
 __Inputs:__
-- A phylo-kmer database (usually having a __.rps__ extension) constructed from a reference alignment and tree (see below).
+- A phylo-kmer database (__.rps__ extension) constructed from a reference alignment and tree (see below).
 - A table associating each sequence in the reference alignment to a type (a.k.a. "strain"), in __csv__ format.
-- A set of query sequences (e.g. whole genomes, long reads), in __fasta__ format.
+- A set of query sequences (e.g. whole genomes or long reads), in __fasta__ format.
 
 __Outputs:__
 - Table of recombination patterns detected in the query sequences.
 
 ### Construction of a phylo-kmer database (pkDB)
 
-In the absence of a pre-computed pkDB, you will need the following to construct your own pkDB: 
+In the absence of a pre-computed pkDB, or to improve the available pkDBs for HIV and HBV,
+you will need the following to construct your own pkDB: 
 
 - *Reference alignment*: a multiple alignment containing a number of reference sequences from each of the strains, in __fasta__ format. These sequences should be pure (i.e. non recombinant) with respect to their strain.
 - *Reference tree*: a phylogenetic tree built from the reference alignment, in __newick__ format.
 
-The construction of the pkDB should be performed with [RAPPAS2](https://github.com/phylo42/rappas2). Its code and documentation are available at https://github.com/phylo42/rappas2. Guidelines specific to SHERPAS about this step are discussed in Sec. 2 of the [Supplementary Materials](https://www.biorxiv.org/content/biorxiv/early/2020/06/22/2020.06.22.161422/DC1/embed/media-1.pdf). 
+The construction of the pkDB should be performed with [RAPPAS2](https://github.com/phylo42/rappas2). Its code and documentation are available at https://github.com/phylo42/rappas2. 
+pkDB construction is computationally heavy, but only need to be performed once for a given reference alignment.
+Guidelines specific to SHERPAS about this step are discussed in Sec. 2 of the [Supplementary Materials](https://www.biorxiv.org/content/biorxiv/early/2020/06/22/2020.06.22.161422/DC1/embed/media-1.pdf).
 
-### Availability of precomputed pkDBs
+
+### Availability of pre-computed pkDBs
 
 The phylo-kmer databases used in the SHERPAS manuscript can be downloaded from Dryad: [temporary link](https://datadryad.org/stash/share/nfeKF0waJCchScSeP1vhUbkYWinRJG_lcdSSub_BcCI) (large file: about 10 GB).
 They can be used for recombination detection in whole-genome HIV and HBV sequences, and in HIV pol sequences. 
@@ -128,8 +132,12 @@ Option | Description | Default value
 
 ## Mandatory options
 
-**-d** : The path to the .rps file containing the phylo-kmer database. All the information on a reference alignment and the corresponding phylogeny used by SHERPAS are stored in this file, that needs to be built prior to using SHERPAS (with [RAPPAS2](https://github.com/phylo42/rappas2)). This building step only needs to be performed once for a given reference alignment. 
+**-d** : The path to the .rps file containing the phylo-kmer database. 
+All the information on a reference alignment and the corresponding phylogeny used by SHERPAS are stored in this file. 
+This file is either obtained from a trusted source (see ### Availability of pre-computed pkDBs above) or
+built by the user prior to using SHERPAS (with [RAPPAS2](https://github.com/phylo42/rappas2)). 
 <!---
+This building step only needs to be performed once for a given reference alignment
 and a given kmer size k (note also that the database can independently be used with RAPPAS and SHERPAS).
 --->
 
