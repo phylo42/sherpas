@@ -9,8 +9,7 @@ __Reference:__
 Scholz GE, Linard B, Romashchenko N, Rivals E, Pardi F. *Rapid screening and detection of inter-type viral recombinants using phylo-k-mers.* (Submitted, [preprint available here](https://www.biorxiv.org/content/10.1101/2020.06.22.161422v1).)
 
  - [Overview](#overview)
- - [Usage](#usage)
-   - [Compilation and rapid test](#compilation-and-rapid-test)
+ - [Installation and rapid test](#installation-and-rapid-test)
  - [SHERPAS Execution](#sherpas-execution)
    - [Mandatory options](#mandatory-options)
    - [Optional parameters](#optional-parameters)
@@ -52,10 +51,7 @@ https://doi.org/10.5061/dryad.r7sqv9s85
 --->
 
 
-
-# Usage
-
-## Compilation and rapid test
+# Installation and rapid test
 
 **Prerequisites:**
 
@@ -134,7 +130,7 @@ Option | Description | Default value
 
 **-d** : The path to the .rps file containing the phylo-kmer database. 
 All the information on a reference alignment and the corresponding phylogeny used by SHERPAS are stored in this file. 
-This file is either obtained from a trusted source (see ### Availability of pre-computed pkDBs above) or
+This file is either obtained from a trusted source (e.g. [availability of pre-computed pkDBs](#availability-of-pre-computed-pkdbs)) or
 built by the user prior to using SHERPAS (with [RAPPAS2](https://github.com/phylo42/rappas2)). 
 <!---
 This building step only needs to be performed once for a given reference alignment
