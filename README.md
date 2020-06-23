@@ -22,7 +22,7 @@ Scholz GE, Linard B, Romashchenko N, Rivals E, Pardi F. *Rapid screening and det
 __Inputs:__
 - A phylo-kmer database (__.rps__ extension) constructed from a reference alignment and tree (see below).
 - A table associating each sequence in the reference alignment to a type (a.k.a. "strain"), in __csv__ format.
-- A set of query sequences (e.g. whole genomes or long reads), in __fasta__ format.
+- A dataset of unaligned query sequences (e.g. whole genomes or long reads), in __fasta__ format.
 
 __Outputs:__
 - Table of recombination patterns detected in the query sequences.
@@ -32,7 +32,7 @@ __Outputs:__
 In the absence of a pre-computed pkDB, or to improve the available pkDBs for HIV and HBV,
 you will need the following to construct your own pkDB: 
 
-- *Reference alignment*: a multiple alignment containing a number of reference sequences from each of the strains, in __fasta__ format. These sequences should be pure (i.e. non recombinant) with respect to their strain.
+- *Reference alignment*: a multiple alignment containing a collection of reference sequences from each of the strains, in __fasta__ format. These sequences should be pure (i.e. non recombinant) with respect to their strain.
 - *Reference tree*: a phylogenetic tree built from the reference alignment, in __newick__ format.
 
 The construction of the pkDB should be performed with [RAPPAS2](https://github.com/phylo42/rappas2); 
@@ -56,7 +56,7 @@ https://doi.org/10.5061/dryad.r7sqv9s85
 **Prerequisites:**
 
 * Make sure Boost Librairies >=1.65 are present.
-* Your GCC compiler must support c++17
+* Your GCC compiler must support C++17
 * CMake >= 3.10 installed
 
 In Debian, these can be installed with:
@@ -94,7 +94,7 @@ sherpas/SHERPAS -d DB_k10_o1.5.rps -q ../examples/HBV_all/queries-3000.fasta -o 
 ```
 
 These 3000 queries should be analyzed in less than 5 minutes (using a 3Ghz i7 CPU).
-You should obtain the following file in the same directory :
+You should obtain the following files in the same directory :
 
 ``` shell
 # the results themselves, e.g a the list of recombinant regions detected for each query:
@@ -104,7 +104,7 @@ prefix_res-queries-3000.txt
 prefix_queries-3000-circ300.fasta
 ```
 
-# SHERPAS Execution
+# Execution
 
 ```shell
 sherpas/SHERPAS [options] 
@@ -138,8 +138,8 @@ and a given kmer size k (note also that the database can independently be used w
 --->
 
 **-g** : The path to a .csv file that specifies the mapping between strains and sequences in the reference alignment.
-This file consists of two columns, the first one containing the name of the sequences in the reference alignment (these names must match the names of in the alignment file used to build the database), the second one the corresponding strains.
-Important note on typography: for technical reasons, neither the sequence names nor the strains names should contain a comma (‘,’). Moreover, strain names should not contain a star (‘*’).
+This file consists of two columns, the first one containing the name of the sequences in the reference alignment (these names must match the names in the alignment file used to build the database), the second one the corresponding strains.
+Neither the sequence names nor the strains names should contain a comma (‘,’). Moreover, strain names should not contain a star (‘*’).
 
 *Example:*
 ```
@@ -149,7 +149,7 @@ ref_3,B
 ref_4,C
 ```
 
-**-q** : The path to a .fasta file of query sequences. The sequences in this dataset will be investigated individually by SHERPAS, using the information in the two files specified by the two options above.
+**-q** : The path to a .fasta file of query sequences. The sequences in this dataset will be analyzed individually by SHERPAS, using the information in the two files specified by the two options above.
 
 **-o** : A prefix for the output file(s). This can also be used to specify an output directory (end the prefix with ‘/’).
 See section [Outputs](#outputs) below for details on the output format.
@@ -165,8 +165,8 @@ depending on the different use cases for SHERPAS.
 
 The window size controls how easily SHERPAS switches between different strain classifications along the query. 
 Smaller windows tend to produce more fragmented partitions of the queries, thus increasing the detection of short recombinant segments, but also that of false positive recombinants.
-The minimum possible value is 100, and the maximum is the length in k-mers* of the shortest sequence in the query file.
-(*The number of kmers in a sequence of length L is L+1-k, where k is the k-mer size.) 
+The minimum possible value is 100, and the maximum is the length in *k*-mers* of the shortest sequence in the query file.
+(*The number of *k*-mers in a sequence of length *L* is *L*+1-*k*.) 
 We advise against any value smaller than 200 or larger than 600. 
 
 **-m** : The method used by SHERPAS (default value F). 
