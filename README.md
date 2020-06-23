@@ -6,7 +6,7 @@ A new, alignment-free genome recombination detection tool exploiting the idea of
 
 __Reference:__
 
-*Scholz GE, Linard B, Romashchenko N, Rivals E, Pardi F. Rapid screening and detection of inter-type viral recombinants using phylo-k-mers. (Submitted)*
+Scholz GE, Linard B, Romashchenko N, Rivals E, Pardi F. *Rapid screening and detection of inter-type viral recombinants using phylo-k-mers.* (Submitted, [preprint available here](https://www.biorxiv.org/content/10.1101/2020.06.22.161422v1).)
 
  - [Overview](#overview)
  - [Usage](#usage)
@@ -23,7 +23,7 @@ __Reference:__
 __Inputs:__
 - A phylo-kmer database (usually having a __.rps__ extension) constructed from a reference alignment and tree (see below).
 - A table associating each sequence in the reference alignment to a type (a.k.a. "strain"), in __csv__ format.
-- A set of query sequences (e.g. whole genomes, long reads) for which recombination screening will be performed, in __fasta__ format.
+- A set of query sequences (e.g. whole genomes, long reads), in __fasta__ format.
 
 __Outputs:__
 - Table of recombination patterns detected in the query sequences.
@@ -35,7 +35,19 @@ In the absence of a pre-computed pkDB, you will need the following to construct 
 - *Reference alignment*: a multiple alignment containing a number of reference sequences from each of the strains, in __fasta__ format. These sequences should be pure (i.e. non recombinant) with respect to their strain.
 - *Reference tree*: a phylogenetic tree built from the reference alignment, in __newick__ format.
 
-The construction of the pkDB should be performed with [RAPPAS2](https://github.com/phylo42/rappas2). Its code and documentation are available at https://github.com/phylo42/rappas2.
+The construction of the pkDB should be performed with [RAPPAS2](https://github.com/phylo42/rappas2). Its code and documentation are available at https://github.com/phylo42/rappas2. Guidelines specific to SHERPAS about this step are discussed in Sec. 2 of the [Supplementary Materials](https://www.biorxiv.org/content/biorxiv/early/2020/06/22/2020.06.22.161422/DC1/embed/media-1.pdf). 
+
+### Availability of precomputed pkDBs
+
+The phylo-kmer databases used in the SHERPAS manuscript can be downloaded from Dryad: [temporary link](https://datadryad.org/stash/share/nfeKF0waJCchScSeP1vhUbkYWinRJG_lcdSSub_BcCI).
+They can be used for recombination detection for whole-genome HIV and HBV sequences, and for HIV pol sequences. 
+<!--- 
+Final link should be one of:
+https://datadryad.org/stash/downloads/file_stream/373882
+https://doi.org/10.5061/dryad.r7sqv9s85
+--->
+
+
 
 # Usage
 
@@ -73,7 +85,7 @@ A rapid prediction of HBV (Hepathitis B Virus) recombinants can be performed.
 From the `release-build` repository in which you compiled sources, execute the following commands:
 
 ```shell
-# download a SHERPAS database already pre-built from HBV pure types: 
+# download a phylo-kmer database pre-built from HBV pure types: 
 wget https://www.dropbox.com/s/m75hfo4mem4eb46/pkDB-HBV-full.zip
 unzip pkDB-HBV-full.zip
 
@@ -91,8 +103,6 @@ prefix_res-queries-3000.txt
 # the queries in fasta format, matching the coordinates of prefix_res-queries-3000.txt 
 prefix_queries-3000-circ300.fasta
 ```
-More pre-built phylo-kmer databases (those used in the SHERPAS manuscript) can be downloaded from Dryad:
-https://datadryad.org/stash/downloads/file_stream/373882.
 
 # SHERPAS Execution
 
