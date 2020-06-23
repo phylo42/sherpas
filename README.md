@@ -10,7 +10,7 @@ Scholz GE, Linard B, Romashchenko N, Rivals E, Pardi F. *Rapid screening and det
 
  - [Overview](#overview)
  - [Installation and rapid test](#installation-and-rapid-test)
- - [SHERPAS Execution](#sherpas-execution)
+ - [Execution](#execution)
    - [Mandatory options](#mandatory-options)
    - [Optional parameters](#optional-parameters)
    - [Advanced customization](#advanced-customization)
