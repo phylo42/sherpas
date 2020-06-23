@@ -39,8 +39,8 @@ The construction of the pkDB should be performed with [RAPPAS2](https://github.c
 
 ### Availability of precomputed pkDBs
 
-The phylo-kmer databases used in the SHERPAS manuscript can be downloaded from Dryad: [temporary link](https://datadryad.org/stash/share/nfeKF0waJCchScSeP1vhUbkYWinRJG_lcdSSub_BcCI).
-They can be used for recombination detection for whole-genome HIV and HBV sequences, and for HIV pol sequences. 
+The phylo-kmer databases used in the SHERPAS manuscript can be downloaded from Dryad: [temporary link](https://datadryad.org/stash/share/nfeKF0waJCchScSeP1vhUbkYWinRJG_lcdSSub_BcCI) (large file: about 10 GB).
+They can be used for recombination detection in whole-genome HIV and HBV sequences, and in HIV pol sequences. 
 <!--- 
 Final link should be one of:
 https://datadryad.org/stash/downloads/file_stream/373882
