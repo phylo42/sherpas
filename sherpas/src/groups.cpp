@@ -69,7 +69,7 @@ std::string groupFromTab(std::string nm, std::vector<std::string> tab)
 	return res;
 }
 
-void getArcRef(core::phylo_tree& tree, std::vector<std::string>* ref, std::string gfile)
+void getArcRef(xpas::phylo_tree& tree, std::vector<std::string>* ref, std::string gfile)
 {
 	//maps each branch to the corresponding group in *ref
 	if((*ref).size()>0)
@@ -148,10 +148,10 @@ int isTop(std::string gr)
 	return res;
 }
 
-void onlyRoot(const core::phylo_kmer_db& db, core::phylo_kmer_db *db2, std::vector<std::string>* ref)
+void onlyRoot(const xpas::phylo_kmer_db& db, xpas::phylo_kmer_db *db2, std::vector<std::string>* ref)
 {
 	//shrinks a database by keeping only the score of the root of each group
-	double thr=core::score_threshold(db.omega(), db.kmer_size());
+	double thr=xpas::score_threshold(db.omega(), db.kmer_size());
 	for(const auto& [key, entries] : db)
 	{
 		for (const auto& [branch, score] : entries)

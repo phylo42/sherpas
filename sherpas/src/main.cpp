@@ -8,15 +8,12 @@
 
 
 #include <iostream>
-#include <fstream>
-#include <unordered_map>
 #include <time.h>
-#include <random>
 #include "query.h"
 #include "output.h"
 #include <utils/io/fasta.h>
-#include <core/serialization.h>
-#include <core/newick.h>
+#include <xpas/serialization.h>
+#include <xpas/newick.h>
 
 using namespace std;
 
@@ -166,11 +163,12 @@ int main(int argc, char** argv) {
 		cout << " (default)";
 	}
 	cout << endl;
-	core::phylo_kmer_db db_rap = core::load(dbadd);
+    xpas::phylo_kmer_db db_rap = xpas::load(dbadd);
 	size_t k=db_rap.kmer_size();
-	core::phylo_tree tree = rappas::io::parse_newick(db_rap.tree());	
+    xpas::phylo_tree tree = xpas::io::parse_newick(db_rap.tree());
+
 	int tree_size=tree.get_node_count();
-	core::phylo_kmer_db db_small {k, db_rap.omega(), std::string{db_rap.tree()} };
+    xpas::phylo_kmer_db db_small {k, db_rap.omega(), std::string{db_rap.tree()} };
 	int wi=100;
 	int top=2;
 	int shift=(wi+k-1)/2;
@@ -183,10 +181,10 @@ int main(int argc, char** argv) {
 		shift=0;
 		qadd=oadd+qfile+"-circ"+to_string(ws)+".fasta";
 	}
-	std::vector<rappas::io::fasta> sequences = rappas::io::read_fasta(qadd);
+	std::vector<xpas::io::fasta> sequences = xpas::io::read_fasta(qadd);
 	sequences=gapRm(&sequences);
 	int s=sequences.size();
-	std::vector<std::vector<core::phylo_kmer_db::key_type>> codes(0);
+	std::vector<std::vector<xpas::phylo_kmer_db::key_type>> codes(0);
 	std::vector<Arc> branches=getArcs(tree_size);
 	std::vector<Arc*> read(0);
 	Htree H(read);
@@ -194,7 +192,7 @@ int main(int argc, char** argv) {
 	std::vector<std::string> ref(0);
 	std::vector<double> rat(0);
 	std::vector<int> group_id(0);
-	core::phylo_kmer_db* db=&db_rap;
+    xpas::phylo_kmer_db* db=&db_rap;
 	getArcRef(tree, &ref, gadd);
 	if(dbtype=='F')
 	{

@@ -15,14 +15,14 @@
 using namespace std;
 //the main algorithm
 
-std::vector<rappas::io::fasta> gapRm(std::vector<rappas::io::fasta> *sequences)
+std::vector<xpas::io::fasta> gapRm(std::vector<xpas::io::fasta> *sequences)
 {
 	//gap-remover; useful to remove gaps (now that was unexpected)
 	int s=(*sequences).size();
-	std::vector<rappas::io::fasta> res;
+	std::vector<xpas::io::fasta> res;
 	for(int i=0; i<s; i++)
 	{
-		(res).emplace_back(move((((*sequences)[i]).header()).data()), move(rappas::io::clean_sequence((((*sequences)[i]).sequence()).data())));
+		(res).emplace_back(move((((*sequences)[i]).header()).data()), move(xpas::io::clean_sequence((((*sequences)[i]).sequence()).data())));
 	}
 	return res;
 }
@@ -32,7 +32,7 @@ void make_circu(std::string res, std::string rep, int p)
 	// adds p bases of the end to the beginning of the sequence, and p bases of the beginning to the end. p should be (ws+k-1)/2 for queries.
 	// creates a new file. To be used until circularity is considered in the core for db building and queries reading (if that happens).
 	ofstream write(rep);
-	std::vector<rappas::io::fasta> seq= rappas::io::read_fasta(res);
+	std::vector<xpas::io::fasta> seq= xpas::io::read_fasta(res);
 	std::string prefix = "";
 	std::string suffix = "";
 	for(int i=0; i<seq.size(); i++)
@@ -65,14 +65,14 @@ int nucl(char c)
     return res;
 }
 
-std::vector<std::vector<core::phylo_kmer_db::key_type>> encode_ambiguous_string(std::string_view long_read, const size_t kmer_size)
+std::vector<std::vector<xpas::phylo_kmer_db::key_type>> encode_ambiguous_string(std::string_view long_read, const size_t kmer_size)
 {
 	//reads the query as a list of kmers, then translated into a list of multi-codes. kmers with one ambiguity get codes for each possibility, kmers with more than one ambiguity are skipped.
 	size_t position = 0;
-	std::vector<std::vector<core::phylo_kmer_db::key_type>> res(0);
-	std::vector<core::phylo_kmer_db::key_type> nope (0);
+	std::vector<std::vector<xpas::phylo_kmer_db::key_type>> res(0);
+	std::vector<xpas::phylo_kmer_db::key_type> nope (0);
 	nope.push_back(-1);
-	for (const auto& [kmer, codes] : core::to_kmers<core::one_ambiguity_policy>(long_read, kmer_size))
+	for (const auto& [kmer, codes] : xpas::to_kmers<xpas::one_ambiguity_policy>(long_read, kmer_size))
 	{
 		{
 			res.push_back(codes);
@@ -86,11 +86,11 @@ std::vector<std::vector<core::phylo_kmer_db::key_type>> encode_ambiguous_string(
 	return res;
 }
 
-std::vector<std::vector<core::phylo_kmer_db::key_type>> fixCcodes(std::vector<std::vector<core::phylo_kmer_db::key_type>> ccodes, std::string_view long_read, const size_t kmer_size)
+std::vector<std::vector<xpas::phylo_kmer_db::key_type>> fixCcodes(std::vector<std::vector<xpas::phylo_kmer_db::key_type>> ccodes, std::string_view long_read, const size_t kmer_size)
 {
 	// assigns empty code string to kmers with more than one ambiguity
-	std::vector<std::vector<core::phylo_kmer_db::key_type>> res(0);
-	std::vector<core::phylo_kmer_db::key_type> nope (0);
+	std::vector<std::vector<xpas::phylo_kmer_db::key_type>> res(0);
+	std::vector<xpas::phylo_kmer_db::key_type> nope (0);
 	nope.push_back(-1);
 	int check=0;
 	int pos=0;
@@ -123,15 +123,15 @@ std::vector<std::vector<core::phylo_kmer_db::key_type>> fixCcodes(std::vector<st
 	return res;
 }
 
-void readQuery(std::vector<std::vector<core::phylo_kmer_db::key_type>> codes, const core::phylo_kmer_db& db, std::vector<Arc>* branches, Htree *H)
+void readQuery(std::vector<std::vector<xpas::phylo_kmer_db::key_type>> codes, const xpas::phylo_kmer_db& db, std::vector<Arc>* branches, Htree *H)
 {
 	//RAPPAS algorithm on a given query
 	//result stored in heap *H
 	std::vector<Arc*> res(0);
 	size_t k=db.kmer_size();
-	double thr = log10(core::score_threshold(db.omega(),k));
+	double thr = log10(xpas::score_threshold(db.omega(),k));
 	int q=codes.size();
-	std::vector<core::phylo_kmer_db::key_type> ka;
+	std::vector<xpas::phylo_kmer_db::key_type> ka;
 	std::vector<double> Lamb((*branches).size());
 	int w=0;
 	double add=0;
@@ -189,7 +189,7 @@ void readQuery(std::vector<std::vector<core::phylo_kmer_db::key_type>> codes, co
 	}
 }
 
-void addKmer(std::vector<core::phylo_kmer_db::key_type> keys, Htree* H, const core::phylo_kmer_db& db, std::vector<Arc>* branches, double thr, int sw, int k, int move)
+void addKmer(std::vector<xpas::phylo_kmer_db::key_type> keys, Htree* H, const xpas::phylo_kmer_db& db, std::vector<Arc>* branches, double thr, int sw, int k, int move)
 {
 	//updates scores when a kmer is added.
 	int w=keys.size();
@@ -256,7 +256,7 @@ void addKmer(std::vector<core::phylo_kmer_db::key_type> keys, Htree* H, const co
 	}
 }
 
-void rmKmer(std::vector<core::phylo_kmer_db::key_type> keys, Htree* H, const core::phylo_kmer_db& db, std::vector<Arc>* branches, double thr, int move)
+void rmKmer(std::vector<xpas::phylo_kmer_db::key_type> keys, Htree* H, const xpas::phylo_kmer_db& db, std::vector<Arc>* branches, double thr, int move)
 {
 	//updates scores when a kmer is removed.
 	int w=keys.size();
@@ -322,7 +322,7 @@ void rmKmer(std::vector<core::phylo_kmer_db::key_type> keys, Htree* H, const cor
 }
 
 
-void slidingVarWindow(std::vector<std::vector<core::phylo_kmer_db::key_type>> codes, int wi, int sw, int m, const core::phylo_kmer_db& db, std::vector<Arc>* branches, std::vector<std::vector<Arc*>> *res, std::vector<double> *rat, char met)
+void slidingVarWindow(std::vector<std::vector<xpas::phylo_kmer_db::key_type>> codes, int wi, int sw, int m, const xpas::phylo_kmer_db& db, std::vector<Arc>* branches, std::vector<std::vector<Arc*>> *res, std::vector<double> *rat, char met)
 {
 	//the main algorithm.
 	//basically a sliding window except the window size increases (from wi to sw) at the beginning of the query and decreases (from sw to wi) at the end.
@@ -333,10 +333,10 @@ void slidingVarWindow(std::vector<std::vector<core::phylo_kmer_db::key_type>> co
 	Htree H(rest);
 	std::vector<Arc*> temp(m);
 	size_t k=db.kmer_size();
-	double thr = log10(core::score_threshold(db.omega(),k));
+	double thr = log10(xpas::score_threshold(db.omega(),k));
 	int q=codes.size();
-	std::vector<core::phylo_kmer_db::key_type> ka;
-	std::vector<core::phylo_kmer_db::key_type> kr;
+	std::vector<xpas::phylo_kmer_db::key_type> ka;
+	std::vector<xpas::phylo_kmer_db::key_type> kr;
 	if(sw>q || wi>sw)
 	{
 		cout << "Dimension problems: check windows size vs k-mer size and/or windows size vs query length" << endl;
@@ -344,7 +344,7 @@ void slidingVarWindow(std::vector<std::vector<core::phylo_kmer_db::key_type>> co
 	}
 	else
 	{
-		std::vector<std::vector<core::phylo_kmer_db::key_type>> firstw(codes.begin(),codes.begin()+wi-1);
+		std::vector<std::vector<xpas::phylo_kmer_db::key_type>> firstw(codes.begin(),codes.begin()+wi-1);
 		readQuery(firstw, db, branches, &H);
 		H.getTop(m);
 		if(met=='R')
