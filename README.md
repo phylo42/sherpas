@@ -175,7 +175,7 @@ Currently two options are possible, “full” (called with F) and “reduced”
 
 **-t** : The threshold controlling unassigned regions (default value 100 for method F and 0.99 for method R). 
 
-A section of a query can be returned as “unassigned” (N/A) if the evidence for any particular strain is too weak. This threshold governs the definition of “too weak”, with high thresholds generally producing larger unassigned regions, i.e. more conservative strain assignments. The precise meaning of this threshold depends on the chosen method: 
+A segment of a query can be returned as “unassigned” (N/A) if the evidence for any particular strain is too weak. This threshold governs the definition of “too weak”, with high thresholds generally producing larger unassigned regions, i.e. more conservative strain assignments. The precise meaning of this threshold depends on the chosen method: 
 In method F, in order for a region to be assigned to a strain, the ratio of the best score over the second best score must be larger than the threshold. In method R, it is the ratio of the best score over the sum of all scores that must be larger than the threshold. 
 <!---
 For method F, the parameter controlled by the threshold is the ratio of the best score over the second best score, thus the threshold should be either zero or greater than one (any threshold between zero and one has the same effect as a threshold of zero). For method R, it is the ratio of the best score over the sum of all scores, so the threshold must be comprised between zero and one in that case (a threshold greater than one will return “unassigned” for the whole sequence, as the ratio computed is always smaller than one). For both methods, a threshold of zero means that no such control is operated.
@@ -211,7 +211,7 @@ The coordinates are 1-based and are relative to the query sequences with gaps (i
 7287	8663	B
 ```
 
-Alternatively (when option -l is activated), the output for one given query is reduced to a single comma separated line, in the form:
+Alternatively (when option -l is activated), the output for one query is reduced to a single comma separated line, in the form:
 ```
 0,[strain_1],[breakpoint_1],[strain_2],...,[breakpoint_n-1],[strain_n],[end_of_sequence_position]
 ```
