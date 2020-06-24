@@ -91,24 +91,34 @@ int Arc::compareArc(int a)
 	return r;
 }
 
-
-
 std::vector<Arc> getArcs(int s)
 {
 	std::vector<Arc> res;
+
+	// CODE REVIEW: Consider reserving memory for vectors of known size.
+	// That makes push_back, emplace_back operations faster in practice.
+	// See: https://en.cppreference.com/w/cpp/container/vector/reserve
+	res.reserve(s + 1);
+
 	for(int i=0;i<s+1;i++)
 	{
-		Arc a=Arc(i,0);
-		res.push_back(a);
+	    // CODE REVIEW: push_back makes an unnecessary copy of object a in the worst case or a move in the best case.
+	    // Both can be avoided with emplace_back.
+	    // See: https://en.cppreference.com/w/cpp/container/vector/emplace_back
+		//Arc a=Arc(i,0);
+		//res.push_back(a);
+		res.emplace_back(i, 0);
 	}
 	return res;
 }
 
-void clearBranches (std::vector<Arc>* b)
+void clearBranches(std::vector<Arc>& b)
 {
-	int s=(*b).size();
-	for(int i=0; i<s; i++)
+    // CODE REVIEW: vector::size actually returns size_t.
+    // CODE REVIEW: const
+	const size_t s = b.size();
+	for(size_t i=0; i<s; i++)
 	{
-		(*b)[i].reinit();
+		b[i].reinit();
 	}
 }

@@ -164,6 +164,7 @@ int main(int argc, char** argv) {
 	}
 	cout << endl;
     xpas::phylo_kmer_db db_rap = xpas::load(dbadd);
+
 	size_t k=db_rap.kmer_size();
     xpas::phylo_tree tree = xpas::io::parse_newick(db_rap.tree());
 
@@ -181,8 +182,12 @@ int main(int argc, char** argv) {
 		shift=0;
 		qadd=oadd+qfile+"-circ"+to_string(ws)+".fasta";
 	}
+
 	std::vector<xpas::io::fasta> sequences = xpas::io::read_fasta(qadd);
-	sequences=gapRm(&sequences);
+
+	// CODE REVIEW: see query.h
+	//sequences=gapRm(&sequences);
+
 	int s=sequences.size();
 	std::vector<std::vector<xpas::phylo_kmer_db::key_type>> codes(0);
 	std::vector<Arc> branches=getArcs(tree_size);
@@ -217,10 +222,13 @@ int main(int argc, char** argv) {
 		cout << s-i << " - " <<  sequences[i].header() << endl;
 		writef << ">" << sequences[i].header() << endl;
 		codes=encode_ambiguous_string(sequences[i].sequence(),k);
-		slidingVarWindow(codes, wi, ws, top, *db, &branches, &windows, &rat, dbtype);
+		slidingVarWindow(codes, wi, ws, top, *db, branches, windows, rat, dbtype);
 		mergeNA(printChange(windows, shift, ref, theta, rat, dbtype), cflag, lflag, kflag, &writef);
-		clearBranches(&branches);
-		windInit(&windows);
+
+		// CODE REVIEW: see the declaration of clearBranches
+		clearBranches(branches);
+
+		windInit(windows);
 		rat.clear();
 	}
 	writef.close();

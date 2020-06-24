@@ -35,7 +35,8 @@ private:
 
 std::vector<Arc> getArcs(int s);
 
-void clearBranches (std::vector<Arc>* b);
+// CODE REVIEW: Prefer references to pointers to pass an argument
+void clearBranches(std::vector<Arc>& b);
 
 
 #endif /* ARCS_H_ */
