@@ -172,6 +172,7 @@ We advise against any value smaller than 200 or larger than 600.
 **-m** : The method used by SHERPAS (default value F). 
 
 Currently two options are possible, “full” (called with F) and “reduced” (called with R). While “full” is usually more accurate, “reduced” is much faster.
+Of the 3 optional parameters, this is the only one that has a significant influence on running times.
 
 **-t** : The threshold controlling unassigned regions (default value 100 for method F and 0.99 for method R). 
 
