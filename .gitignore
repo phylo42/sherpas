@@ -2,3 +2,4 @@ recomb/src/mull-main.cpp
 recomb/src/mull.cpp
 release-build
 core
+.DS_Store

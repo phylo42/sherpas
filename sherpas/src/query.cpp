@@ -416,7 +416,7 @@ void slidingVarWindow(const std::vector<std::vector<xpas::phylo_kmer_db::key_typ
 	//basically a sliding window except the window size increases (from wi to sw) at the beginning of the query and decreases (from sw to wi) at the end.
 	//equivalent to a sliding window if wi=sw (case of circular queries).
 	//as the window size increases by 2 at each step, wi and ws should have same parity (I can't guarantee what happens otherwise, but this may induce a shift in positions somewhere).
-	Arc *neutral=new Arc(-1,0);
+	//Arc *neutral=new Arc(-1,0);
 	std::vector<Arc*> rest(0);
 	Htree H(rest);
 	std::vector<Arc*> temp(m);
@@ -478,6 +478,7 @@ void slidingVarWindow(const std::vector<std::vector<xpas::phylo_kmer_db::key_typ
 			}
 			else
 			{
+				Arc *neutral=new Arc(-1,0);
 				temp[i]=neutral;
 			}
 		}
@@ -522,6 +523,7 @@ void slidingVarWindow(const std::vector<std::vector<xpas::phylo_kmer_db::key_typ
 				}
 				else
 				{
+					Arc *neutral=new Arc(-1,0);
 					temp[i]=neutral;
 				}
 			}
@@ -560,6 +562,7 @@ void slidingVarWindow(const std::vector<std::vector<xpas::phylo_kmer_db::key_typ
 				}
 				else
 				{
+					Arc *neutral=new Arc(-1,0);
 					temp[i]=neutral;
 				}
 			}
@@ -599,6 +602,7 @@ void slidingVarWindow(const std::vector<std::vector<xpas::phylo_kmer_db::key_typ
 				}
 				else
 				{
+					Arc *neutral=new Arc(-1,0);
 					temp[i]=neutral;
 				}
 			}
