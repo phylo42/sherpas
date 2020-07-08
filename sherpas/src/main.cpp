@@ -183,13 +183,18 @@ int main(int argc, char** argv) {
 		qadd=oadd+qfile+"-circ"+to_string(ws)+".fasta";
 	}
 
-	std::vector<xpas::io::fasta> sequences = xpas::io::read_fasta(qadd);
+	// CODE REVIEW: not needed anymore, see the main loop
+	//std::vector<xpas::io::fasta> sequences = xpas::io::read_fasta(qadd);
 
 	// CODE REVIEW: see query.h
 	//sequences=gapRm(&sequences);
 
-	int s=sequences.size();
-	std::vector<std::vector<xpas::phylo_kmer_db::key_type>> codes(0);
+	// CODE REVIEW: is not needed anymore
+	//int s=sequences.size();
+
+	// CODE REVIEW: see the main loop
+	//std::vector<std::vector<xpas::phylo_kmer_db::key_type>> codes(0);
+
 	std::vector<Arc> branches=getArcs(tree_size);
 	std::vector<Arc*> read(0);
 	Htree H(read);
@@ -217,11 +222,16 @@ int main(int argc, char** argv) {
 	remove(&(outfile[0]));
 	ofstream writef(outfile, ios::app);
 	printHead(qfile, dbtype, theta, ws, cflag, kflag, &writef);
-	for(int i=0; i<s; i++)
+	for(const auto& seq : xpas::io::read_fasta(qadd))
 	{
-		cout << s-i << " - " <<  sequences[i].header() << endl;
-		writef << ">" << sequences[i].header() << endl;
-		codes=encode_ambiguous_string(sequences[i].sequence(),k);
+	    // CODE REVIEW: with batch sequence reading we don't know the total size anymore
+        cout << seq.header() << endl;
+
+		writef << ">" << seq.header() << endl;
+
+		// CODE REVIEW: Prefer declaring const local variables if possible
+		const auto codes = encode_ambiguous_string(seq.sequence(), k);
+
 		slidingVarWindow(codes, wi, ws, top, *db, branches, windows, rat, dbtype);
 		mergeNA(printChange(windows, shift, ref, theta, rat, dbtype), cflag, lflag, kflag, &writef);
 

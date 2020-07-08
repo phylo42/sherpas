@@ -40,15 +40,20 @@ void make_circu(const std::string& res, const std::string& rep, int p)
 	// adds p bases of the end to the beginning of the sequence, and p bases of the beginning to the end. p should be (ws+k-1)/2 for queries.
 	// creates a new file. To be used until circularity is considered in the core for db building and queries reading (if that happens).
 	ofstream write(rep);
-	std::vector<xpas::io::fasta> seq= xpas::io::read_fasta(res);
 	std::string prefix = "";
 	std::string suffix = "";
-	for(int i=0; i<seq.size(); i++)
+
+	// CODE REVIEW: xpas::io::read_fasta now reads fasta in batches. There is no more need to
+	// save it in a vector
+	for (const auto& seq : xpas::io::read_fasta(res))
 	{
-		prefix = (seq[i].sequence()).substr(0, p);
-		suffix = (seq[i].sequence()).substr((seq[i].sequence()).length()-p);
-		write << ">" << seq[i].header() << endl;
-		write << suffix << seq[i].sequence() << prefix << endl;
+
+	    // CODE REVIEW: That could be done without copying data with std::string_view,
+	    // but I think that it is not an issue here because prefix and suffix are small
+		prefix = (seq.sequence()).substr(0, p);
+		suffix = (seq.sequence()).substr((seq.sequence()).length()-p);
+		write << ">" << seq.header() << endl;
+		write << suffix << seq.sequence() << prefix << endl;
 	}
 }
 
