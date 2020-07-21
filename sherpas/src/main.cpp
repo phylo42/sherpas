@@ -182,19 +182,6 @@ int main(int argc, char** argv) {
 		shift=0;
 		qadd=oadd+qfile+"-circ"+to_string(ws)+".fasta";
 	}
-
-	// CODE REVIEW: not needed anymore, see the main loop
-	//std::vector<xpas::io::fasta> sequences = xpas::io::read_fasta(qadd);
-
-	// CODE REVIEW: see query.h
-	//sequences=gapRm(&sequences);
-
-	// CODE REVIEW: is not needed anymore
-	//int s=sequences.size();
-
-	// CODE REVIEW: see the main loop
-	//std::vector<std::vector<xpas::phylo_kmer_db::key_type>> codes(0);
-
 	std::vector<Arc> branches=getArcs(tree_size);
 	std::vector<Arc*> read(0);
 	Htree H(read);
@@ -224,25 +211,24 @@ int main(int argc, char** argv) {
 	printHead(qfile, dbtype, theta, ws, cflag, kflag, &writef);
 	for(const auto& seq : xpas::io::read_fasta(qadd))
 	{
-	    // CODE REVIEW: with batch sequence reading we don't know the total size anymore
-        cout << seq.header() << endl;
-
+        	cout << seq.header() << endl;
 		writef << ">" << seq.header() << endl;
-
-		// CODE REVIEW: Prefer declaring const local variables if possible
-		const auto codes = encode_ambiguous_string(seq.sequence(), k);
-
-		slidingVarWindow(codes, wi, ws, top, *db, branches, windows, rat, dbtype);
-		mergeNA(printChange(windows, shift, ref, theta, rat, dbtype), cflag, lflag, kflag, &writef);
-
-		// CODE REVIEW: see the declaration of clearBranches
-		clearBranches(branches);
-
-		windInit(windows);
-		rat.clear();
+		if((seq.sequence()).length() < k)
+		{
+			writef << "1\t" << (seq.sequence()).length() << "\tN/A" << endl << endl;
+		}
+		else
+		{
+			const auto codes = encode_ambiguous_string(seq.sequence(), k);
+			slidingVarWindow(codes, wi, ws, top, *db, branches, windows, rat, dbtype);
+			mergeNA(printChange(windows, shift, ref, theta, rat, dbtype), cflag, lflag, kflag, &writef);
+			clearBranches(branches);
+			windows.clear();
+			rat.clear();
+		}
 	}
 	writef.close();
-	cout << "overall time " << float(clock()-t)/CLOCKS_PER_SEC<< " sec." <<endl;
+	cout << "queries processing time " << float(clock()-t)/CLOCKS_PER_SEC<< " sec." <<endl;
 	cout << "The End !" << endl;
 	return 0;
 }
