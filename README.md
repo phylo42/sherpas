@@ -52,7 +52,7 @@ https://doi.org/10.5061/dryad.r7sqv9s85
 
 # Installation and test
 
-**Conda installation **
+**Conda installation:**
 
 If you use conda (https://docs.conda.io/en/latest/), SHERPAS can be installed with:
 ```
