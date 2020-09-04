@@ -9,7 +9,7 @@ __Reference:__
 Scholz GE, Linard B, Romashchenko N, Rivals E, Pardi F. *Rapid screening and detection of inter-type viral recombinants using phylo-k-mers.* (Submitted, [preprint available here](https://www.biorxiv.org/content/10.1101/2020.06.22.161422v1).)
 
  - [Overview](#overview)
- - [Installation and rapid test](#installation-and-rapid-test)
+ - [Installation and test](#installation-and-test)
  - [Execution](#execution)
    - [Mandatory options](#mandatory-options)
    - [Optional parameters](#optional-parameters)
@@ -50,10 +50,16 @@ https://datadryad.org/stash/downloads/file_stream/373882
 https://doi.org/10.5061/dryad.r7sqv9s85
 --->
 
+# Installation and test
 
-# Installation and rapid test
+**Conda installation **
 
-**Prerequisites:**
+If you use conda (https://docs.conda.io/en/latest/), SHERPAS can be installed with:
+```
+conda install -c bioconda sherpas
+```
+
+**Source compilation prerequisites:**
 
 * Make sure Boost Librairies >=1.65 are present.
 * Your GCC compiler must support C++17
@@ -66,7 +72,7 @@ sudo apt install cmake
 sudo apt install libboost-all-dev
 ```
 
-**Compilation:**
+**Source compilation:**
 
 Clone the repository with recursive option:
 
