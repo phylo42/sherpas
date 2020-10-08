@@ -35,7 +35,7 @@ private:
 
 std::vector<Arc> getArcs(int s);
 
-void clearBranches (std::vector<Arc>* b);
+void clearBranches(std::vector<Arc>& b);
 
 
 #endif /* ARCS_H_ */

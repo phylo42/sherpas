@@ -91,24 +91,23 @@ int Arc::compareArc(int a)
 	return r;
 }
 
-
-
 std::vector<Arc> getArcs(int s)
 {
 	std::vector<Arc> res;
+	res.reserve(s + 1);
+
 	for(int i=0;i<s+1;i++)
 	{
-		Arc a=Arc(i,0);
-		res.push_back(a);
+	    res.emplace_back(i, 0);
 	}
 	return res;
 }
 
-void clearBranches (std::vector<Arc>* b)
+void clearBranches(std::vector<Arc>& b)
 {
-	int s=(*b).size();
-	for(int i=0; i<s; i++)
+	const size_t s = b.size();
+	for(size_t i=0; i<s; i++)
 	{
-		(*b)[i].reinit();
+		b[i].reinit();
 	}
 }

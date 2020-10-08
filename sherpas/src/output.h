@@ -7,17 +7,19 @@
 
 #ifndef WRITE_H_
 #define WRITE_H_
-#include<iostream>
-#include<fstream>
-#include<vector>
+#include <iostream>
+#include <fstream>
+#include <vector>
 #include <string>
 #include "arcs.h"
 #include "groups.h"
-#include <core/phylo_kmer_db.h>
-#include <core/kmer_iterator.h>
+#include <xpas/phylo_kmer_db.h>
+#include <xpas/kmer_iterator.h>
 #include <utils/io/fasta.h>
 
 std::vector<std::string> readNm(std::string res);
+
+void outdir(std::string add);
 
 std::string fileName(std::string add);
 
