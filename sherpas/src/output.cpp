@@ -11,6 +11,7 @@
 #include<vector>
 #include <string>
 #include<cmath>
+#include <filesystem>
 #include "output.h"
 
 using namespace std;
@@ -38,6 +39,20 @@ std::vector<std::string> readNm(std::string res)
 		cout << "No file found at " << res << endl;
 	}
 	return read;
+}
+
+void outdir(std::string add)
+{
+	int i=add.length()-1;
+	while(add[i] != '/')
+	{
+		i--;
+	}
+	cout << add.substr(0,i+1) << endl;
+	if(filesystem::exists(add.substr(0,i+1))==0)
+	{
+		filesystem::create_directory(add.substr(0,i+1));
+	}
 }
 
 std::string fileName(std::string add)

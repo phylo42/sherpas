@@ -19,6 +19,8 @@
 
 std::vector<std::string> readNm(std::string res);
 
+void outdir(std::string add);
+
 std::string fileName(std::string add);
 
 void printHead(std::string qfile, char dbtype, double theta, int ws, int cflag, int kflag, std::ofstream* writef);

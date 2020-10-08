@@ -9,9 +9,9 @@ add_executable(
         src/heap.cpp
         src/query.h
         src/query.cpp
-	    src/groups.cpp
+        src/groups.cpp
         src/groups.h
-	    src/output.cpp
+        src/output.cpp
         src/output.h
 )
 
