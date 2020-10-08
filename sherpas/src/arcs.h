@@ -35,7 +35,6 @@ private:
 
 std::vector<Arc> getArcs(int s);
 
-// CODE REVIEW: Prefer references to pointers to pass an argument
 void clearBranches(std::vector<Arc>& b);
 
 

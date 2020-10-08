@@ -29,6 +29,7 @@ int main(int argc, char** argv) {
 	int cflag=0;
 	int lflag=0;
 	int kflag=0;
+	int hflag=0;
 	int arg=0;
 	std::string dbadd="";
 	std::string qadd="";
@@ -37,9 +38,8 @@ int main(int argc, char** argv) {
 	int ws=300;
 	double theta=100;
 	char dbtype='F';
-	cout << "Let's go ! @_y" << endl;
 	clock_t t=clock();
-	while (-1 != (arg = getopt(argc, argv, "d:q:g:o:m:t:w:clk")))
+	while (-1 != (arg = getopt(argc, argv, "d:q:g:o:m:t:w:clkh")))
 	{
 		switch(arg)
 		{
@@ -97,9 +97,34 @@ int main(int argc, char** argv) {
 				// no N/A-removal if activated
 				kflag=1;
 				break;
+			case 'h':
+				// prints help
+				hflag=1;
+				break;
 			default:
         			abort ();
 		}
+	}
+	if (hflag==1)
+	{
+		cout << "---SHERPAS---" << endl;
+		cout << "Screening Historical Events of Recombination in a Phylogeny via Ancestral Sequences" << endl;
+		cout << endl << "Mandatory options:" << endl;
+		cout << "-d \t Path to the phylo-kmer database" << endl;
+		cout << "-g \t Path to the strain-alignment file" << endl;
+		cout << "-q \t Path to the query file" << endl;
+		cout << "-o \t Path to the output directory" << endl;
+		cout << endl << "Additional options:" << endl;
+		cout << "-w \t Window size (default=300)" << endl;
+		cout << "-m \t Method (F or R, default=F)" << endl;
+		cout << "-t \t Threshold for unassigned regions (default=100 [F] or 0.99 [R])" << endl;
+		cout << "-c \t Activates circularity options (to be used for circular queries)" << endl;
+		cout << "-l \t Changes output layout" << endl;
+		cout << "-k \t Disables post-treatment of unassigned regions" << endl;
+		cout << endl << "Other:" << endl;
+		cout << "-h \t Prints help" << endl;
+		cout << endl << "limk to full documentation : https://github.com/phylo42/sherpas" << endl;
+		return 0;
 	}
 	if (dflag==0)
 	{
@@ -182,19 +207,6 @@ int main(int argc, char** argv) {
 		shift=0;
 		qadd=oadd+qfile+"-circ"+to_string(ws)+".fasta";
 	}
-
-	// CODE REVIEW: not needed anymore, see the main loop
-	//std::vector<xpas::io::fasta> sequences = xpas::io::read_fasta(qadd);
-
-	// CODE REVIEW: see query.h
-	//sequences=gapRm(&sequences);
-
-	// CODE REVIEW: is not needed anymore
-	//int s=sequences.size();
-
-	// CODE REVIEW: see the main loop
-	//std::vector<std::vector<xpas::phylo_kmer_db::key_type>> codes(0);
-
 	std::vector<Arc> branches=getArcs(tree_size);
 	std::vector<Arc*> read(0);
 	Htree H(read);
@@ -217,32 +229,40 @@ int main(int argc, char** argv) {
 	std::vector<std::string> all=listGroups(ref);
 	all.push_back("all");
 	cout << "db and infos loaded in " << float(clock()-t)/CLOCKS_PER_SEC<< " sec." <<endl;
+	cout << "Let's go ! @_y" << endl;
 	t=clock();
+	outdir(oadd);
 	std::string outfile=oadd+"res-"+qfile+".txt";
 	remove(&(outfile[0]));
 	ofstream writef(outfile, ios::app);
 	printHead(qfile, dbtype, theta, ws, cflag, kflag, &writef);
+	int i=1;
+	int mult=0;
 	for(const auto& seq : xpas::io::read_fasta(qadd))
 	{
-	    // CODE REVIEW: with batch sequence reading we don't know the total size anymore
-        cout << seq.header() << endl;
-
+		if(i-mult*1000==1)
+		{
+			mult++;
+			cout << "In progress; " << i-1 << " queries processed." << endl;
+		}
+		i++;
 		writef << ">" << seq.header() << endl;
-
-		// CODE REVIEW: Prefer declaring const local variables if possible
-		const auto codes = encode_ambiguous_string(seq.sequence(), k);
-
-		slidingVarWindow(codes, wi, ws, top, *db, branches, windows, rat, dbtype);
-		mergeNA(printChange(windows, shift, ref, theta, rat, dbtype), cflag, lflag, kflag, &writef);
-
-		// CODE REVIEW: see the declaration of clearBranches
-		clearBranches(branches);
-
-		windInit(windows);
-		rat.clear();
+		if((seq.sequence()).length() < k)
+		{
+			writef << "1\t" << (seq.sequence()).length() << "\tN/A" << endl << endl;
+		}
+		else
+		{
+			const auto codes = encode_ambiguous_string(seq.sequence(), k);
+			slidingVarWindow(codes, wi, ws, top, *db, branches, windows, rat, dbtype);
+			mergeNA(printChange(windows, shift, ref, theta, rat, dbtype), cflag, lflag, kflag, &writef);
+			clearBranches(branches);
+			windows.clear();
+			rat.clear();
+		}
 	}
 	writef.close();
-	cout << "overall time " << float(clock()-t)/CLOCKS_PER_SEC<< " sec." <<endl;
-	cout << "The End !" << endl;
+	cout << "Finished! " << i-1 << " queries processed in " << float(clock()-t)/CLOCKS_PER_SEC<< " sec." <<endl;
+	cout << endl << "The End !" << endl;
 	return 0;
 }
