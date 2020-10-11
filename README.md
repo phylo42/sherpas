@@ -35,8 +35,11 @@ you will need the following to construct your own pkDB:
 - *Reference alignment*: a multiple alignment containing a collection of reference sequences from each of the strains, in __fasta__ format. These sequences should be pure (i.e. non recombinant) with respect to their strain.
 - *Reference tree*: a phylogenetic tree built from the reference alignment, in __newick__ format.
 
-The construction of the pkDB should be performed with [RAPPAS2](https://github.com/phylo42/rappas2); 
-pkDB construction is computationally heavy, but only needs to be performed once for a given reference alignment.
+The construction of the pkDB should be performed with [RAPPAS2](https://github.com/phylo42/rappas2),
+using a value of *k* equal to at least 10. This is because viral genomes are longer than typical markers
+used for phylogenetic placement (which is the standard use of RAPPAS2).
+
+Database construction is computationally heavy, but only needs to be performed once for a given reference alignment.
 Guidelines specific to SHERPAS about this step are discussed in Sec. 2 of the [Supplementary Materials](https://www.biorxiv.org/content/biorxiv/early/2020/06/22/2020.06.22.161422/DC1/embed/media-1.pdf).
 
 
