@@ -7,14 +7,14 @@
 
 
 #include<iostream>
-#include<fstream>
 #include<vector>
 #include <string>
-#include<cmath>
-#include <filesystem>
+#include <boost/filesystem.hpp>
 #include "output.h"
 
 using namespace std;
+namespace fs = boost::filesystem;
+
 //deals with output and writes files.
 
 std::vector<std::string> readNm(std::string res)
@@ -49,9 +49,9 @@ void outdir(std::string add)
 		i--;
 	}
 	cout << add.substr(0,i+1) << endl;
-	if(filesystem::exists(add.substr(0,i+1))==0)
+	if(fs::exists(add.substr(0,i+1))==0)
 	{
-		filesystem::create_directory(add.substr(0,i+1));
+		fs::create_directory(add.substr(0,i+1));
 	}
 }
 
