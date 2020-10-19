@@ -72,7 +72,7 @@ In Debian, these can be installed with:
 ```
 sudo apt install build-essential
 sudo apt install cmake
-sudo apt install libboost-all-dev
+sudo apt install libboost-all-dev libboost-serialization-dev libboost-filesystem-dev libboost-iostreams-dev
 ```
 
 **Source compilation:**
