@@ -123,7 +123,7 @@ int main(int argc, char** argv) {
 		cout << "-k \t Disables post-treatment of unassigned regions" << endl;
 		cout << endl << "Other:" << endl;
 		cout << "-h \t Prints help" << endl;
-		cout << endl << "limk to full documentation : https://github.com/phylo42/sherpas" << endl;
+		cout << endl << "link to full documentation : https://github.com/phylo42/sherpas" << endl;
 		return 0;
 	}
 	if (dflag==0)
