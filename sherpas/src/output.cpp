@@ -43,12 +43,12 @@ std::vector<std::string> readNm(std::string res)
 
 void outdir(std::string add)
 {
+	//creates output directory
 	int i=add.length()-1;
 	while(add[i] != '/' && i>0)
 	{
 		i--;
 	}
-	//cout << add.substr(0,i+1) << endl;
 	if(i>0 && filesystem::exists(add.substr(0,i+1))==0)
 	{
 		filesystem::create_directory(add.substr(0,i+1));
