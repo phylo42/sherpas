@@ -19,9 +19,14 @@
 
 std::vector<std::string> readNm(std::string res);
 
-void outdir(std::string add);
+// Creates a directory if it does not exists
+void createDirectory(const std::string& filename);
 
-std::string fileName(std::string add);
+// Check if input file exists. If not, throws an exception
+void checkFileExists(const std::string& filename);
+
+// Extracts the file name from its full name
+std::string getFileName(const std::string& filename);
 
 void printHead(std::string qfile, char dbtype, double theta, int ws, int cflag, int kflag, std::ofstream* writef);
 

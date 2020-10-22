@@ -7,14 +7,13 @@
 
 
 #include<iostream>
-#include<fstream>
 #include<vector>
 #include <string>
-#include<cmath>
-#include <filesystem>
+#include <boost/filesystem.hpp>
 #include "output.h"
 
 using namespace std;
+namespace fs = boost::filesystem;
 //deals with output and writes files.
 
 std::vector<std::string> readNm(std::string res)
@@ -41,39 +40,26 @@ std::vector<std::string> readNm(std::string res)
 	return read;
 }
 
-void outdir(std::string add)
+void createDirectory(const std::string& filename)
 {
-	//creates output directory
-	int i=add.length()-1;
-	while(add[i] != '/' && i>0)
-	{
-		i--;
-	}
-	if(i>0 && filesystem::exists(add.substr(0,i+1))==0)
-	{
-		filesystem::create_directory(add.substr(0,i+1));
-	}
+    if (!fs::is_directory(filename) || !fs::exists(filename)) {
+        fs::create_directory(filename);
+    }
 }
 
-std::string fileName(std::string add)
+void checkFileExists(const std::string& filename)
 {
-	//Extracts file name from its address.
-	std::string res=add;
-	int p=add.length()-1;
-	int e=0;
-	while(add[p] != '/' && p>0)
-	{
-		if(add[p]=='.')
-		{
-			e=p;
-		}
-		p--;
-	}
-	if(p>0)
-	{
-		res=add.substr(p+1, e-p-1);
-	}
-	return res;
+    if (!fs::exists(filename))
+    {
+        throw std::runtime_error("ERROR! No such file: " + filename);
+    }
+}
+
+
+std::string getFileName(const std::string& filename)
+{
+    boost::filesystem::path path(filename);
+	return path.stem().string();
 }
 
 void printHead(std::string qfile, char dbtype, double theta, int ws, int cflag, int kflag, std::ofstream* writef)

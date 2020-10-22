@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <time.h>
+#include <boost/filesystem.hpp>
 #include "query.h"
 #include "output.h"
 #include <utils/io/fasta.h>
@@ -16,6 +17,7 @@
 #include <xpas/newick.h>
 
 using namespace std;
+namespace fs = boost::filesystem;
 
 int main(int argc, char** argv) {
 	std::ios::sync_with_stdio(false);
@@ -166,7 +168,30 @@ int main(int argc, char** argv) {
     		cout << "please note that the threshold must be lower than 1 when using method R" << endl;
 		return 1;
 	}
-	cout << "DB: " << dbadd << endl;
+
+    try
+    {
+        // Check if all files provided by the user exist
+        checkFileExists(dbadd);
+        checkFileExists(qadd);
+        // no need to check if gadd exists
+
+        // Create the output directory
+        createDirectory(oadd);
+    }
+    catch(fs::filesystem_error& err)
+    {
+        std::cerr << "ERROR! Could not create output directory: " << err.what() << std::endl;
+        return 1;
+    }
+    catch(std::runtime_error& err)
+    {
+        std::cerr << err.what() << std::endl;
+        return 1;
+    }
+
+
+    cout << "DB: " << dbadd << endl;
 	cout << "queries: " << qadd << endl;
 	cout << "groups: " << gadd << endl;
 	cout << "output: " << oadd << endl;
@@ -193,20 +218,32 @@ int main(int argc, char** argv) {
 	size_t k=db_rap.kmer_size();
     xpas::phylo_tree tree = xpas::io::parse_newick(db_rap.tree());
 
+
 	int tree_size=tree.get_node_count();
     xpas::phylo_kmer_db db_small {k, db_rap.omega(), std::string{db_rap.tree()} };
 	int wi=100;
 	int top=2;
 	int shift=(wi+k-1)/2;
-	std::string qfile=fileName(qadd);
+
+	// get query file name without extention
+	std::string qfile = getFileName(qadd);
+
 	if(cflag ==1)
 	{
 		cout << "circular genome" << endl;
-		make_circu(qadd, oadd+qfile+"-circ"+to_string(ws)+".fasta", (ws+k-1)/2);
+
+        // create -circu output file name
+        std::string rep_filename = qfile +"-circ"+to_string(ws)+".fasta";
+        std::string rep_fullname = (fs::path(oadd) / fs::path(rep_filename)).string();
+
+		make_circu(qadd, rep_fullname, (ws+k-1)/2);
+
 		wi=ws;
 		shift=0;
-		qadd=oadd+qfile+"-circ"+to_string(ws)+".fasta";
+
+		qadd = rep_fullname;
 	}
+
 	std::vector<Arc> branches=getArcs(tree_size);
 	std::vector<Arc*> read(0);
 	Htree H(read);
@@ -231,11 +268,12 @@ int main(int argc, char** argv) {
 	cout << "db and infos loaded in " << float(clock()-t)/CLOCKS_PER_SEC<< " sec." <<endl;
 	cout << "Let's go ! @_y" << endl;
 	t=clock();
-	outdir(oadd);
-	std::string outfile=oadd+"res-"+qfile+".txt";
-	remove(&(outfile[0]));
+
+	std::string outfile=(fs::path(oadd) / fs::path("res-"+qfile+".txt")).string();
+
 	ofstream writef(outfile, ios::app);
 	printHead(qfile, dbtype, theta, ws, cflag, kflag, &writef);
+
 	int i=1;
 	int mult=0;
 	for(const auto& seq : xpas::io::read_fasta(qadd))
