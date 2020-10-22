@@ -109,7 +109,7 @@ You should obtain the following files in the `output` directory :
 # the results themselves, e.g a the list of recombinant regions detected for each query:
 res-queries-3000.txt 
 
-# the queries in fasta format, matching the coordinates of prefix_res-queries-3000.txt 
+# the queries in fasta format, matching the coordinates of res-queries-3000.txt 
 queries-3000-circ300.fasta
 ```
 
@@ -126,7 +126,7 @@ Option | Description | Default value
 **-d** | path to the phylo-kmer database | None (mandatory field)
 **-g** | path to the strain-assignment file | None (mandatory field)
 **-q** | path to the queries file | None (mandatory field)
-**-o** | prefix for the output file(s) | None (mandatory field)
+**-o** | output directory | None (mandatory field)
 **-w** | window size (>99)	 | 300
 **-m** | method used (F or R) | F
 **-t** | threshold for unassigned regions | 100 (F) or 0.99 (R)
@@ -160,7 +160,7 @@ ref_4,C
 
 **-q** : The path to a .fasta file of query sequences. The sequences in this dataset will be analyzed individually by SHERPAS, using the information in the two files specified by the two options above.
 
-**-o** : A prefix for the output file(s). This can also be used to specify an output directory (end the prefix with ‘/’).
+**-o** : The path to the output directory.
 See section [Outputs](#outputs) below for details on the output format.
 <!--- The path to the output directory, where the result files will be created. --->
 
