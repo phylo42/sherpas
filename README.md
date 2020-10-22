@@ -85,7 +85,7 @@ cd sherpas
 mkdir release-build
 cd release-build
 cmake ..
-make
+make -j4
 ```
 
 **Rapid test:**
@@ -99,18 +99,18 @@ wget https://www.dropbox.com/s/m75hfo4mem4eb46/pkDB-HBV-full.zip
 unzip pkDB-HBV-full.zip
 
 # launch a prediction for 3000 HBV queries, using the pre-built HBV database:
-sherpas/SHERPAS -d DB_k10_o1.5.rps -q ../examples/HBV_all/queries-3000.fasta -o prefix_ -g ref-groups.csv -c
+sherpas/SHERPAS -d DB_k10_o1.5.rps -q ../examples/HBV_all/queries-3000.fasta -o output -g ref-groups.csv -c
 ```
 
 These 3000 queries should be analyzed in less than 5 minutes (using a 3Ghz i7 CPU).
-You should obtain the following files in the same directory :
+You should obtain the following files in the `output` directory :
 
 ``` shell
 # the results themselves, e.g a the list of recombinant regions detected for each query:
-prefix_res-queries-3000.txt 
+res-queries-3000.txt 
 
 # the queries in fasta format, matching the coordinates of prefix_res-queries-3000.txt 
-prefix_queries-3000-circ300.fasta
+queries-3000-circ300.fasta
 ```
 
 # Execution
