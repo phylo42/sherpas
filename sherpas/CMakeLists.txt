@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-find_package(Boost REQUIRED COMPONENTS filesystem)
+find_package(Boost REQUIRED COMPONENTS filesystem iostreams)
 
 add_executable(
 	SHERPAS
@@ -21,4 +21,5 @@ target_link_libraries(SHERPAS
         PRIVATE
             xpas::dna
 			Boost::filesystem
+			Boost::iostreams
         )

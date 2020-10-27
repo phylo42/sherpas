@@ -220,7 +220,7 @@ int main(int argc, char** argv) {
 
 
 	int tree_size=tree.get_node_count();
-    xpas::phylo_kmer_db db_small {k, db_rap.omega(), std::string{db_rap.tree()} };
+    xpas::phylo_kmer_db db_small {k, db_rap.omega(), xpas::seq_type::name, std::string{db_rap.tree()} };
 	int wi=100;
 	int top=2;
 	int shift=(wi+k-1)/2;

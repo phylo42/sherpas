@@ -158,7 +158,7 @@ void onlyRoot(const xpas::phylo_kmer_db& db, xpas::phylo_kmer_db *db2, std::vect
 		{
 			if((*ref)[branch+1] != (*ref)[branch] && !isTop((*ref)[branch]))
 			{
-				(*db2).insert(key, {branch, score});
+				db2->unsafe_insert(key, {branch, score});
 			}
 		}
 	}
