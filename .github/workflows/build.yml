@@ -38,7 +38,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        submodules: true
+        submodules: recursive
 
     - name: (MacOS) Install dependencies
       if: runner.os == 'macOS'
