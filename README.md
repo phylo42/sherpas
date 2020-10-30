@@ -82,9 +82,8 @@ Clone the repository with recursive option:
 ```shell
 git clone --recursive https://github.com/phylo42/sherpas.git        #do not forget the --recursive !!!
 cd sherpas
-mkdir release-build
-cd release-build
-cmake ..
+mkdir release-build && cd release-build
+cmake --target SHERPAS ..
 make -j4
 ```
 
