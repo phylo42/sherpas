@@ -90,14 +90,25 @@ make -j4
 **Rapid test:**
 
 A rapid prediction of HBV (Hepathitis B Virus) recombinants can be performed.
-From the `release-build` repository in which you compiled sources, execute the following commands:
+From the `release-build` repository in which you compiled sources, execute the following commands.
 
+*If you used conda:*
 ```shell
 # download a phylo-kmer database pre-built from HBV pure types: 
 wget https://www.dropbox.com/s/m75hfo4mem4eb46/pkDB-HBV-full.zip
 unzip pkDB-HBV-full.zip
-
+# download queries
+wget https://github.com/phylo42/sherpas/tree/master/examples/HBV_all/queries-3000.fasta
 # launch a prediction for 3000 HBV queries, using the pre-built HBV database:
+SHERPAS -d DB_k10_o1.5.rps -q queries-3000.fasta -o output -g ref-groups.csv -c
+```
+*If you built from sources:*
+```shell
+# download a phylo-kmer database pre-built from HBV pure types: 
+wget https://www.dropbox.com/s/m75hfo4mem4eb46/pkDB-HBV-full.zip
+unzip pkDB-HBV-full.zip
+# launch a prediction for 3000 HBV queries, using the pre-built HBV database
+# queries were already downloaded (via your git clone)
 sherpas/SHERPAS -d DB_k10_o1.5.rps -q ../examples/HBV_all/queries-3000.fasta -o output -g ref-groups.csv -c
 ```
 
