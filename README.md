@@ -59,7 +59,7 @@ https://doi.org/10.5061/dryad.r7sqv9s85
 
 If you use conda (https://docs.conda.io/en/latest/), SHERPAS can be installed with:
 ```
-conda install -c bioconda sherpas
+conda install -c conda-forge -c bioconda sherpas
 ```
 
 **Source compilation prerequisites:**
