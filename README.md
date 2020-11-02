@@ -98,7 +98,7 @@ From the `release-build` repository in which you compiled sources, execute the f
 wget https://www.dropbox.com/s/m75hfo4mem4eb46/pkDB-HBV-full.zip
 unzip pkDB-HBV-full.zip
 # download queries
-wget https://github.com/phylo42/sherpas/tree/master/examples/HBV_all/queries-3000.fasta
+wget https://raw.githubusercontent.com/phylo42/sherpas/master/examples/HBV_all/queries-3000.fasta
 # launch a prediction for 3000 HBV queries, using the pre-built HBV database:
 SHERPAS -d DB_k10_o1.5.rps -q queries-3000.fasta -o output -g ref-groups.csv -c
 ```
