@@ -6,7 +6,7 @@ A new, alignment-free genome recombination detection tool exploiting the idea of
 
 __Reference:__
 
-Scholz GE, Linard B, Romashchenko N, Rivals E, Pardi F. [Rapid screening and detection of inter-type viral recombinants using phylo-k-mers.](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btaa1020) *Bioinformatics*
+Scholz GE, Linard B, Romashchenko N, Rivals E, Pardi F. [Rapid screening and detection of inter-type viral recombinants using phylo-k-mers.](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btaa1020/6040747) *Bioinformatics*
 
  - [Overview](#overview)
  - [Installation and test](#installation-and-test)
