@@ -1,3 +1,4 @@
 [submodule "lib/xpas"]
 	path = lib/xpas
 	url = https://github.com/phylo42/xpas.git
+	branch = sherpas_compatilibity_xpasv0.3.1
