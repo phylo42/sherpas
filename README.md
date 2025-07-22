@@ -80,22 +80,28 @@ sudo apt install libboost-all-dev
 Clone the repository with recursive option:
 
 ```shell
-git clone --recursive https://github.com/phylo42/sherpas.git        #do not forget the --recursive !!!
+git clone --recurse-submodules git@github.com:phylo42/sherpas.git        #do not forget the --recurse-submodules !!!
 cd sherpas
-mkdir release-build && cd release-build
-cmake --target SHERPAS ..
-make -j4
+cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 .                               #do not forget the dot at the end !!!
+make -j8
+```
+
+This will build several essential binaries :
+```shell
+sherpas/SHERPAS                    # the SHERPAS binary
+lib/xpas/build/xpas-build-dna      # the binary to build a database from DNA sequences
+lib/xpas/build/xpas-build-aa       # the binary to build a database from Amino Acid sequences
 ```
 
 **Rapid test:**
 
 A rapid prediction of HBV (Hepathitis B Virus) recombinants can be performed.
-From the `release-build` repository in which you compiled sources, execute the following commands.
+From the directory in which you compiled sources, execute the following commands.
 
 *If you used conda:*
 ```shell
-# download a phylo-kmer database pre-built from HBV pure types: 
-wget https://www.dropbox.com/s/m75hfo4mem4eb46/pkDB-HBV-full.zip
+# download a phylo-kmer database pre-built from HBV pure types from
+# https://datadryad.org/downloads/file_stream/537187  => pkDB-HBV-full.zip
 unzip pkDB-HBV-full.zip
 # download queries
 wget https://raw.githubusercontent.com/phylo42/sherpas/master/examples/HBV_all/queries-3000.fasta
@@ -104,8 +110,8 @@ SHERPAS -d DB_k10_o1.5.rps -q queries-3000.fasta -o output -g ref-groups.csv -c
 ```
 *If you built from sources:*
 ```shell
-# download a phylo-kmer database pre-built from HBV pure types: 
-wget https://www.dropbox.com/s/m75hfo4mem4eb46/pkDB-HBV-full.zip
+# download a phylo-kmer database pre-built from HBV pure types from
+# https://datadryad.org/downloads/file_stream/537187  => pkDB-HBV-full.zip
 unzip pkDB-HBV-full.zip
 # launch a prediction for 3000 HBV queries, using the pre-built HBV database
 # queries were already downloaded (via your git clone)
@@ -123,10 +129,44 @@ res-queries-3000.txt
 queries-3000-circ300.fasta
 ```
 
-# Execution
+# Preparing your own database
+
+To use SHERPAS with your own viral model, you will need to prepare the following:
+* A multiple alignement of COMPLETE viral genomes. And only "pure" types shouldbe alignedd, meaning that there should be no recombinant genomes in this dataset. Of course, this notion is relative to time, as all sequenced genomes are likely recombinant of past types. But aim for a clear segragation of your genomes based on types. Discard any genomes already known to be a recombinant of selected types.
+* A phylogeny built from this alignment, using ML reconstruction (any software : phyml, raxml, iq-tree...). Avoid distance-based reconstruction, such as NJ-based constructions.
+* The `phyml` software installed and accessible via command-line (see instructions below). Recommended version is 3.3.20190909 from Bioconda.
+
+## Example of database creation for HBV
+
+Building your own database currently require to build SHERPAS from sources ! 
+See instructions above.
 
 ```shell
-sherpas/SHERPAS [options] 
+# install phyml using conda
+conda create -n phyml_3.3.20190909
+conda activate phyml_3.3.20190909
+conda install -c bioconda phyml=3.3.20190909
+
+# download the HBV genome alignment and corresponding tree
+TODO
+# download the corresponding tree from https://datadryad.org/downloads/file_stream/537187  => pkDB-HBV-full.zip
+unzip pkDB-HBV-full.zip
+# you will get this file: HBV_tree.tree
+
+# we will now build the phylo-k-mer databse using xpas binaries
+# from the cloned repo in which you built sources
+lib/xpas/build/xpas-build-dna --ar-binary $(which phyml) --refalign hbv_genome_alignment.fas --reftree HBV_tree.tree -k 8
+```
+Option `k` is the k-mer size. Default is k=8, and here are some general recommendations :
+* for recombination detection we recommend to set at least k=10, which should be OK for most viral species.
+* longer k will require longer computation and will produce heavy databases.
+* smaller k will result to fast computations but may produce less accurate prediction
+* if you genome alignement shows regions full of gaps, longer k may be counterproductive as phylo-k-mer are hard to compute for these regions.
+
+# SHERPAS Execution
+
+```shell
+SHERPAS [options] 
 ```
 
 Command-line options are the following (see detailed description below):
