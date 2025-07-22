@@ -1,4 +1,4 @@
 [submodule "lib/xpas"]
 	path = lib/xpas
-	url = https://github.com/phylo42/xpas.git
+	url = https://github.com/phylo42/IPK.git
 	branch = sherpas_compatilibity_xpasv0.3.1
