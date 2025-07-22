@@ -12,7 +12,7 @@
 #include <boost/filesystem.hpp>
 #include "query.h"
 #include "output.h"
-#include <utils/io/fasta.h>
+#include "xpas/fasta.h"
 #include <xpas/serialization.h>
 #include <xpas/newick.h>
 

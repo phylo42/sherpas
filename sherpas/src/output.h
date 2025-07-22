@@ -15,7 +15,7 @@
 #include "groups.h"
 #include <xpas/phylo_kmer_db.h>
 #include <xpas/kmer_iterator.h>
-#include <utils/io/fasta.h>
+#include "xpas/fasta.h"
 
 std::vector<std::string> readNm(std::string res);
 
