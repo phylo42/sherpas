@@ -26,27 +26,29 @@ __Inputs:__
 
 __Outputs:__
 - Table of recombination patterns detected in the query sequences.
+- Optionnal: a R script converting this pattern table to a plot is available (see below).
 
 ### Construction of a phylo-kmer database (pkDB)
 
-In the absence of a pre-computed pkDB, or to improve the available pkDBs for HIV and HBV,
-you will need the following to construct your own pkDB: 
+In the absence of a pre-computed pkDB for your viral species, you will need the following to build it : 
 
-- *Reference alignment*: a multiple alignment containing a collection of reference sequences from each of the strains, in __fasta__ format. These sequences should be pure (i.e. non recombinant) with respect to their strain.
-- *Reference tree*: a phylogenetic tree built from the reference alignment, in __newick__ format.
+- *Reference alignment*: a multiple alignment containing a collection of COMPLETE genomes from each of the types/strains, in __fasta__ format. And only "pure" (e.g. non recombinant) types should be aligned. Of course, this notion is relative to time, as all sequenced genomes are likely recombinant of "past" types. In all cases, aim for a clear segragation of your genomes based on types. Discard any genomes already known to be a recombinant of selected types.
+- *Reference tree*: a phylogenetic tree built from the reference alignment, in __newick__ format. You should use ML reconstruction (any software : phyml, raxml, iq-tree...). Avoid distance-based reconstruction, such as NJ-based construction.
+- `phyml` software : installed and accessible via command-line. tested and recommended version is 3.3.20190909, you can install it using Bioconda.
 
-The construction of the pkDB should be performed with [RAPPAS2](https://github.com/phylo42/rappas2),
-using a value of *k* equal to at least 10. This is because viral genomes are longer than typical markers
-used for phylogenetic placement (which is the standard use of RAPPAS2).
+The construction of the pkDB can be performed with [**xpas** (recent version are renamed IPK)](https://github.com/phylo42/IPK), using a value of *k* equal to at least 10. This is because viral genomes are longer than typical markers
+used for phylogenetic placement (which is the standard use of IPK).
 
 Database construction is computationally heavy, but only needs to be performed once for a given reference alignment.
 Guidelines specific to SHERPAS about this step are discussed in Sec. 2 of the [Supplementary Materials](https://www.biorxiv.org/content/biorxiv/early/2020/06/22/2020.06.22.161422/DC1/embed/media-1.pdf).
+
+You will find below a detailed example of such construction.
 
 
 ### Availability of pre-computed pkDBs
 
 The phylo-kmer databases used in the SHERPAS manuscript can be downloaded from Dryad: [temporary link](https://datadryad.org/stash/share/nfeKF0waJCchScSeP1vhUbkYWinRJG_lcdSSub_BcCI) (large file: about 10 GB).
-They can be used for recombination detection in whole-genome HIV and HBV sequences, and in HIV pol sequences. 
+They can be used for recombination detection in whole-genome HIV and HBV sequences, and in HIV polymerase sequences. 
 <!--- 
 Final link should be one of:
 https://datadryad.org/stash/downloads/file_stream/373882
@@ -129,17 +131,11 @@ res-queries-3000.txt
 queries-3000-circ300.fasta
 ```
 
-# Preparing your own database
-
-To use SHERPAS with your own viral model, you will need to prepare the following:
-* A multiple alignement of COMPLETE viral genomes. And only "pure" types shouldbe alignedd, meaning that there should be no recombinant genomes in this dataset. Of course, this notion is relative to time, as all sequenced genomes are likely recombinant of past types. But aim for a clear segragation of your genomes based on types. Discard any genomes already known to be a recombinant of selected types.
-* A phylogeny built from this alignment, using ML reconstruction (any software : phyml, raxml, iq-tree...). Avoid distance-based reconstruction, such as NJ-based constructions.
-* The `phyml` software installed and accessible via command-line (see instructions below). Recommended version is 3.3.20190909 from Bioconda.
+# COMPLETE EXAMPLE, from database build to plot of the recombinant predition.
 
 ## Example of database creation for HBV
 
-Building your own database currently require to build SHERPAS from sources ! 
-See instructions above.
+**Building your own database currently requires to build SHERPAS from sources !**
 
 ```shell
 # install phyml using conda
@@ -147,23 +143,29 @@ conda create -n phyml_3.3.20190909
 conda activate phyml_3.3.20190909
 conda install -c bioconda phyml=3.3.20190909
 
-# download the HBV genome alignment and corresponding tree
-TODO
-# download the corresponding tree from https://datadryad.org/downloads/file_stream/537187  => pkDB-HBV-full.zip
-unzip pkDB-HBV-full.zip
-# you will get this file: HBV_tree.tree
-
-# we will now build the phylo-k-mer databse using xpas binaries
+# HBV tree and alignements are in the example directory, we will use them to build a pkDB
 # from the cloned repo in which you built sources
-lib/xpas/build/xpas-build-dna --ar-binary $(which phyml) --refalign hbv_genome_alignment.fas --reftree HBV_tree.tree -k 8
+lib/xpas/build/xpas-build-dna -k 10 --ar-binary $(which phyml) --refalign example/database_build/HBV-alignment.fas --reftree example/database_build/HBV_tree.newick 
 ```
-Option `k` is the k-mer size. Default is k=8, and here are some general recommendations :
-* for recombination detection we recommend to set at least k=10, which should be OK for most viral species.
-* longer k will require longer computation and will produce heavy databases.
-* smaller k will result to fast computations but may produce less accurate prediction
-* if you genome alignement shows regions full of gaps, longer k may be counterproductive as phylo-k-mer are hard to compute for these regions.
 
-# SHERPAS Execution
+Option `k` is the k-mer size. Default is k=8, and here are some general recommendations :
+* for recombination detection we recommend to set at least k=10, which should be OK for most viral species with genomes <50kb.
+* longer k will require longer computation and will produce heavier databases, but should improve global accuracy.
+* smaller k will result to faster computations but may produce less accurate predictions.
+* if your genome alignement shows regions full of gaps: longer k may be counter-productive as phylo-k-mer will not fit anymore between gaps.
+
+## SHERPAS execution
+
+
+```shell
+# still from top directory of the cloned repo
+/sherpas/SHERPAS -d example/database_build/DB_k8_o1.5.rps -q example/queries.fas -g example/HBV_types.csv -m F -o output_dir
+
+```
+
+
+  
+# SHERPAS Command-line and parameters
 
 ```shell
 SHERPAS [options] 
@@ -254,32 +256,33 @@ These are options that are disabled by default but may be useful in some circums
 
 #  Outputs
 
-The results are written to a .txt file with the following format.
-The header of the file summarizes information about the query file and the parameters used.
-Then for each query, a line indicates the name of the query (its fasta header), 
-and each subsequent line gives coordinates of a distinct sequence segment and the strain to which it was assigned, in the form:
+The results are written to a tabbulated .tsv file with the following format.
+The header of the file, preceeded by `#` summarizes information about the query file and the parameters used.
+Then for each query, a line indicates the name of the query (its fasta header) and coordinates of a distinct sequence segment and the type/strain to which it was assigned, in the form:
 ```
-[first_position] [last_position]	[strain]
+[query_name]\t[first_position]\t[last_position]\t[strain]\n
 ```
-The coordinates are 1-based and are relative to the query sequences with gaps (if any) removed. This is the same format as that used by [jpHMM](http://jphmm.gobics.de/), which facilitates comparisons.  
+The coordinates are 1D-based and are relative to the query sequences with gaps (if any) removed. This is the same format as that used by [jpHMM](http://jphmm.gobics.de/), which facilitates comparisons.  
 
 *Example:*
 ```
->query_1
-1	4593	B
-4594	7286	A
-7287	8663	B
+# header line
+query_1 1	4593	B
+query_1 4594	7286	A
+query_1 7287	8663	B
+query_2 1 546 A
+query_2 547 1200 N/A
 ```
+**N/A** values correspond to segment for which a precise assignation to a type/strain was not possible.
 
 Alternatively (when option -l is activated), the output for one query is reduced to a single comma separated line, in the form:
 ```
-0,[strain_1],[breakpoint_1],[strain_2],...,[breakpoint_n-1],[strain_n],[end_of_sequence_position]
+[query_name],0,[strain_1],[breakpoint_1],[strain_2],...,[breakpoint_n-1],[strain_n],[end_of_sequence_position]
 ```
 
 *Example:*
 ```
->query_1
-0,B,4594,A,7287,B,8663
+query_1,0,B,4594,A,7287,B,8663
 ```
 
 During the program execution, some information about its progress are written to the console. The running time employed to read all input files, and that for all subsequent operations are reported separately.
