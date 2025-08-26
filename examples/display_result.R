@@ -40,6 +40,8 @@ data["y2"]<-2
 ##########################################################################
 # or 1 image per query
 for (i in unique(data$query)) {
+  print(paste("Generating image for ", i))
+
   p <- ggplot() + 
     scale_x_continuous(name="x", limits = c(0,max(data$position_end)), minor_breaks=seq(0,max(data$position_end),by=1000), guide = guide_axis(minor.ticks = TRUE)) + 
     scale_y_continuous(name=data[data$query==i,]$query) +
