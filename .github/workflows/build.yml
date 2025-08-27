@@ -27,17 +27,17 @@ jobs:
       # Use a bash shell so we can use the same syntax for environment variable
       # access regardless of the host operating system
       shell: bash
-      working-directory: ${{runner.workspace}}
+      working-directory: ${{runner.workspace}}/sherpas
       run: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     - name: Build
-      working-directory: ${{runner.workspace}}
+      working-directory: ${{runner.workspace}}/sherpas
       shell: bash
       run: make
     - name: Test SHERPAS
-      working-directory: ${{runner.workspace}}
+      working-directory: ${{runner.workspace}}/sherpas
       shell: bash
       run: sherpas/SHERPAS -h
     - name: Test XPAS-DNA (db build capacity)
-      working-directory: ${{runner.workspace}}
+      working-directory: ${{runner.workspace}}/sherpas
       shell: bash
       run: lib/xpas/build/xpas-build-dna -h
