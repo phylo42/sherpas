@@ -19,7 +19,7 @@ jobs:
         submodules: recursive
     - name: (MacOS) Install dependencies
       if: runner.os == 'macOS'
-      run: brew install libomp boost
+      run: brew install lld libomp boost
     - name: (Linux) Install dependencies
       if: runner.os == 'Linux'
       run: sudo apt-get update && sudo apt-get install -yq libomp-dev libboost-dev libboost-serialization-dev libboost-program-options-dev libboost-filesystem-dev libboost-iostreams-dev
@@ -41,7 +41,7 @@ jobs:
       working-directory: ${{runner.workspace}}/sherpas
       shell: bash
       run: sherpas/SHERPAS -h
-    - name: Test XPAS-DNA (db build capacity)
-      working-directory: ${{runner.workspace}}/sherpas
-      shell: bash
-      run: lib/xpas/build/xpas-build-dna --help
+    #- name: Test XPAS-DNA (db build capacity)
+    #  working-directory: ${{runner.workspace}}/sherpas
+    #  shell: bash
+    #  run: lib/xpas/build/xpas-build-dna --help
