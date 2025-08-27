@@ -22,7 +22,7 @@ jobs:
       run: brew install boost
     - name: (Linux) Install dependencies
       if: runner.os == 'Linux'
-      run: sudo apt-get update && sudo apt-get install -yq libboost-dev libboost-serialization-dev libboost-filesystem-dev libboost-iostreams-dev
+      run: sudo apt-get update && sudo apt-get install -yq libomp-dev libboost-dev libboost-serialization-dev libboost-filesystem-dev libboost-iostreams-dev
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
       # access regardless of the host operating system
