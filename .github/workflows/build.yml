@@ -23,9 +23,13 @@ jobs:
     - name: (Linux) Install dependencies
       if: runner.os == 'Linux'
       run: sudo apt-get update && sudo apt-get install -yq libomp-dev libboost-dev libboost-serialization-dev libboost-program-options-dev libboost-filesystem-dev libboost-iostreams-dev
-    - name: Configure CMake
-      # Use a bash shell so we can use the same syntax for environment variable
-      # access regardless of the host operating system
+    - name: (MacOS) Configure CMake
+      if: runner.os == 'macOS'
+      shell: bash
+      working-directory: ${{runner.workspace}}/sherpas
+      run: cmake -DLDFLAGS="-L/opt/homebrew/opt/libomp/lib" -DCPPFLAGS="-I/opt/homebrew/opt/libomp/include" -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+    - name: (Linux) Configure CMake
+      if: runner.os == 'Linux'
       shell: bash
       working-directory: ${{runner.workspace}}/sherpas
       run: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5
@@ -40,4 +44,4 @@ jobs:
     - name: Test XPAS-DNA (db build capacity)
       working-directory: ${{runner.workspace}}/sherpas
       shell: bash
-      run: lib/xpas/build/xpas-build-dna -h
+      run: lib/xpas/build/xpas-build-dna --help
