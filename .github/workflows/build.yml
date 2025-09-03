@@ -1,0 +1,47 @@
+name: CMake
+on: [push]
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    name: ${{matrix.buildname}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ] #macos-14 ]
+    runs-on: ${{matrix.os}}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    #- name: (MacOS) Install dependencies
+    #  if: runner.os == 'macOS'
+    #  run: brew install llvm@20 lld@20 libomp boost
+    - name: (Linux) Install dependencies
+      if: runner.os == 'Linux'
+      run: sudo apt-get update && sudo apt-get install -yq libomp-dev libboost-dev libboost-serialization-dev libboost-program-options-dev libboost-filesystem-dev libboost-iostreams-dev
+    #- name: (MacOS) Configure CMake
+    #  if: runner.os == 'macOS'
+    #  shell: bash
+    #  working-directory: ${{runner.workspace}}/sherpas
+    #  run: cmake -DLDFLAGS="-L/opt/homebrew/opt/libomp/lib -L/opt/homebrew/opt/llvm/lib" -DCPPFLAGS="-I/opt/homebrew/opt/libomp/include -I/opt/homebrew/opt/llvm/include" -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+    - name: (Linux) Configure CMake
+      if: runner.os == 'Linux'
+      shell: bash
+      working-directory: ${{runner.workspace}}/sherpas
+      run: cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+    - name: Build
+      working-directory: ${{runner.workspace}}/sherpas
+      shell: bash
+      run: make
+    - name: Test SHERPAS
+      working-directory: ${{runner.workspace}}/sherpas
+      shell: bash
+      run: sherpas/SHERPAS -h
+    #- name: Test XPAS-DNA (db build capacity)
+    #  working-directory: ${{runner.workspace}}/sherpas
+    #  shell: bash
+    #  run: lib/xpas/build/xpas-build-dna --help

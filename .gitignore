@@ -3,3 +3,5 @@ recomb/src/mull.cpp
 release-build
 core
 .DS_Store
+cmake-*
+.idea

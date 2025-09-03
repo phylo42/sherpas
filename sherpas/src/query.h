@@ -14,7 +14,7 @@
 #include "heap.h"
 #include <xpas/phylo_kmer_db.h>
 #include <xpas/kmer_iterator.h>
-#include <utils/io/fasta.h>
+#include "xpas/fasta.h"
 
 
 void make_circu(const std::string& res, const std::string& rep, int p);

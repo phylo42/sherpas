@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(sherpas)
+project(sherpas LANGUAGES CXX VERSION 1.0.2)
 
 # default build type Release
 if (NOT CMAKE_BUILD_TYPE)
