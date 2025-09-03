@@ -269,31 +269,31 @@ int main(int argc, char** argv) {
 	cout << "Let's go ! @_y" << endl;
 	t=clock();
 
-	std::string outfile=(fs::path(oadd) / fs::path("res-"+qfile+".txt")).string();
+	std::string outfile=(fs::path(oadd) / fs::path("res__"+qfile+".tsv")).string();
 
-	ofstream writef(outfile, ios::app);
+	ofstream writef(outfile);
 	printHead(qfile, dbtype, theta, ws, cflag, kflag, &writef);
 
 	int i=1;
 	int mult=0;
 	for(const auto& seq : xpas::io::read_fasta(qadd))
 	{
-		if(i-mult*1000==1)
+		if(i-mult*100==1)
 		{
 			mult++;
 			cout << "In progress; " << i-1 << " queries processed." << endl;
 		}
 		i++;
-		writef << ">" << seq.header() << endl;
 		if((seq.sequence()).length() < k)
 		{
-			writef << "1\t" << (seq.sequence()).length() << "\tN/A" << endl << endl;
+            writef << seq.header();
+            writef << "\t1\t" << (seq.sequence()).length() << "\tN/A" << endl;
 		}
 		else
 		{
 			const auto codes = encode_ambiguous_string(seq.sequence(), k);
 			slidingVarWindow(codes, wi, ws, top, *db, branches, windows, rat, dbtype);
-			mergeNA(printChange(windows, shift, ref, theta, rat, dbtype), cflag, lflag, kflag, &writef);
+			mergeNA(printChange(windows, shift, ref, theta, rat, dbtype), cflag, lflag, kflag, &writef, std::string(seq.header()));
 			clearBranches(branches);
 			windows.clear();
 			rat.clear();
@@ -301,6 +301,7 @@ int main(int argc, char** argv) {
 	}
 	writef.close();
 	cout << "Finished! " << i-1 << " queries processed in " << float(clock()-t)/CLOCKS_PER_SEC<< " sec." <<endl;
-	cout << endl << "The End !" << endl;
+    cout << "Results: " << outfile <<endl;
+    cout << endl << "The End !" << endl;
 	return 0;
 }

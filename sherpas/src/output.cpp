@@ -76,7 +76,9 @@ void printHead(std::string qfile, char dbtype, double theta, int ws, int cflag, 
 	{
 		(*writef) << "#" << endl << "# no post-treatment of N/A-segments" << endl;
 	}
-	(*writef) << "#" << endl << endl; 
+	(*writef) << "#" << endl << endl;
+    //csv header
+    (*writef) << "query\tposition_start\tposition_end\tpredicted_type" << endl;
 }
 
 std::vector<std::string> printChange(std::vector<std::vector<Arc*>> result, int shift, std::vector<std::string> ref, double thr, std::vector<double> rat, char m)
@@ -122,7 +124,7 @@ std::vector<std::string> printChange(std::vector<std::vector<Arc*>> result, int 
 	return res;
 }
 
-void mergeNA(std::vector<std::string> read, int circ, int lin, int keep, std::ofstream* write)
+void mergeNA(std::vector<std::string> read, int circ, int lin, int keep, std::ofstream* write, std::string seq_header)
 {
 	//Remove "N/A" section when both adjacent sections are the same.
 	int l=0;
@@ -163,6 +165,7 @@ void mergeNA(std::vector<std::string> read, int circ, int lin, int keep, std::of
 	}
 	if(lin==1)
 	{
+        (*write) << seq_header << "\t";
 		for(int j=0; j<(read).size()-1; j++)
 		{
 			(*write) << read[j] << ",";
@@ -171,12 +174,13 @@ void mergeNA(std::vector<std::string> read, int circ, int lin, int keep, std::of
 	}
 	else
 	{
+        (*write) << seq_header << "\t";
 		(*write) << "1\t";
 		for(int j=1; j<(read).size()-2; j+=2)
 		{
 			(*write) << stoi(read[j+1])-1 << "\t";
-			(*write) << read[j] << endl << read[j+1] << "\t";
+			(*write) << read[j] << endl << seq_header << "\t" << read[j+1] << "\t";
 		}
-		(*write) << (read).back()  << "\t" << read[(read).size()-2] << endl << endl;
+		(*write) << (read).back()  << "\t" << read[(read).size()-2] << endl;
 	}
 }
