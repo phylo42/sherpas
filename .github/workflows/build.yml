@@ -19,7 +19,7 @@ jobs:
         submodules: recursive
     - name: (MacOS) Install dependencies
       if: runner.os == 'macOS'
-      run: brew install llvm@21 libomp boost
+      run: brew install llvm@21 lld@21 libomp boost
     - name: (Linux) Install dependencies
       if: runner.os == 'Linux'
       run: sudo apt-get update && sudo apt-get install -yq libomp-dev libboost-dev libboost-serialization-dev libboost-program-options-dev libboost-filesystem-dev libboost-iostreams-dev
