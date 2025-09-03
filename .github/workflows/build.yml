@@ -19,7 +19,7 @@ jobs:
         submodules: recursive
     - name: (MacOS) Install dependencies
       if: runner.os == 'macOS'
-      run: brew install llvm@21 lld libomp boost
+      run: brew install llvm@21 libomp boost
     - name: (Linux) Install dependencies
       if: runner.os == 'Linux'
       run: sudo apt-get update && sudo apt-get install -yq libomp-dev libboost-dev libboost-serialization-dev libboost-program-options-dev libboost-filesystem-dev libboost-iostreams-dev
@@ -27,7 +27,7 @@ jobs:
       if: runner.os == 'macOS'
       shell: bash
       working-directory: ${{runner.workspace}}/sherpas
-      run: cmake -DLDFLAGS="-L/opt/homebrew/opt/libomp/lib" -DCPPFLAGS="-I/opt/homebrew/opt/libomp/include" -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+      run: cmake -DLDFLAGS="-L/opt/homebrew/opt/libomp/lib -L/opt/homebrew/opt/llvm/lib" -DCPPFLAGS="-I/opt/homebrew/opt/libomp/include -I/opt/homebrew/opt/llvm/include" -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     - name: (Linux) Configure CMake
       if: runner.os == 'Linux'
       shell: bash
